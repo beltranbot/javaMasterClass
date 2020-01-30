@@ -1,0 +1,14 @@
+-- install java in ubuntu
+search in google amazon coretto
+Select download amazon coretto 11
+In a terminal
+> sudo apt-get update && sudo apt-get install java-common
+Install > sudo dpkg --install java-11-amazon-corretto-jdk_11.0.5.10-1_amd64.deb
+
+-- install intellij idea ubuntu
+https://www.jetbrains.com/idea/download/#section=linux
+Download idea > sudo snap install intellij-idea-community --classic
+-- config
+down right > configure, structure for new projects, set jdk
+In configure > setting > editor > autoimport ambiguous and on a fly
+Configure code folding
