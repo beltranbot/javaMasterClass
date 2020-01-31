@@ -1,0 +1,44 @@
+-- primitive types
+in java types are the most basic data types. The in is one of eight primitive types.
+The eight primitive data types in java are boolean, byte, char, short, int, long, float and double.
+Consider these types as the building blocks of data mnipulation.
+
+-- Java packages
+A package is a way to organize your java projects. For now, consider them as folders with learnprogramming in our example being a subfolder of acadey. Companies use their domain names reversed.
+So learnprogramming.academy becomes academy.learnprogramming.
+
+-- Wrapper classes
+Java uses the concept of a wrapper class for all eight primitive types - in te case of an int, we can use Integer, and by doing that it gives us ways to perform operations on an int.
+int myMinIntValue = Integer.MIN_VALUE;
+int myMaxIntValue = Integer.MAX_VALUE;
+System.out.println("Integer Minimun Value = " + myMinIntValue);
+System.out.println("Integer Maximun value = " + myMaxIntValue);
+In this case, we are using the MIN_VALUE and MAX_VALUE to get java to tell us the minimum and maximum ranges of numbers that can be stored.
+
+-- overflow and underflow in java
+if you try and put a value larger than the maximum value in java, or a value smaller than the minimum value in java, then you will get an Overflow in the case of the maximum value aor an Underflow in the case of the minimum.
+
+The computer just kips back to the minimum number or the maximum number, which is usually not what you want. It's an important concept to be aware of.
+
+-- size of primitive types and width
+A byte occupies 8 bits. A bit is not directly represented in a priitive type - we hava boolean which is not really the same thing. So a byte occupies 8 bits. We say that a byte has a width of 8.
+
+A short can store a large range of numbers and occupies 16 bits, and has a width of 16.
+
+An int, has a much larger range as we know and occupiets 32 bits, and has a width of 32.
+
+The poin here is that each primitive type occupies a different amount of memory - we can see that an int needs four times the amount of space, than a byte does for example.
+
+-- casting in java
+Casting meanns to treat or convert a number from on type to another. We put the type we want the number to be in parenthesis like this:
+(bye) (myIntByteValue / 2)
+
+-- floating point numbers
+unlike whole numbers, floating point numbers have fractional parts that were express with a decimal point. 3.14159 is an example.
+Floating point numbers are also known as real numbers. We use a floating point number when we need more precision in calculations.
+
+-- single and double precision
+precision refers to the format and amount of space occupied by the type. Single precision occupies 32 bits (so has a width of 32) and a Double precision occupies 64 bits (and thus has a width of 64)
+
+As a result the float has a range from 1.4E-45 to 3.4028235E+38 and the double is much more precise with a range from 4.9E-324 to 17976931348623157E+308.
+
