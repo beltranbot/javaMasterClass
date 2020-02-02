@@ -42,3 +42,133 @@ precision refers to the format and amount of space occupied by the type. Single 
 
 As a result the float has a range from 1.4E-45 to 3.4028235E+38 and the double is much more precise with a range from 4.9E-324 to 17976931348623157E+308.
 
+-- floating point number precision tips
+in general float and double are great for general floating point operations. But both are not great to use where precise calculations are required - this is due to a limitation with how floating point numbers are stored, and not a java problem as such.
+
+Java has a class called BigDecimal that overcomes this. When precise calculations are necessary, such as when performing currency calculations, floating-point types should not be used.
+
+But for general calculations float and double are fine.
+
+-- Char data type
+A char occupies two bytes of memory, or 16 bits and thus has a width of 16. The reason it's not just a single byte is that it allows you to store Unicode characters.
+
+-- Unicode
+Unicode is an international encodign standar for use with different languages and scripts, by which each letter, digit, or symbol is assigned a unique numeric value that applies accross different platforms and programs.
+
+In the English alphabet, we have the letters A through Z. Meaning only 26 characters are needed in total to represent the entire English alphabet. But other languages need more characters, and often a lot more.
+
+
+Unicode allows us to reprsent these languages and the way it works is that by using a combination of the two bytes that a char takes up in memory it can represent and one of 65535 different types of characters.
+
+-- Boolean primitive type
+A boolean value allows for two choices True or Flase, Yes or No, 1 or 0. In Java terms we have a boolean primitive type and it can be set to two values only, true or false. They are actually pretty useful and you will use them a lot when programming.
+
+-- String
+The String is a datatype in Java, which is not a primitive type. It's actually a Class, but it enjoys a bit of favoritism in Java to make it easier to use than a regular class.
+
+-- What is a String?
+
+A String is a sequence of characters. In the case of the char a single character only (regular character or Unicode character).
+
+A String can contain a sequence of characters. A large number of characaters. Technically it's limited by memory of the MAX_VALUE of an int which was 2.14 Billion.
+
+-- Strings in Java are immutable
+When I said you can delete characters out of String, tat's not stricly true. Because Strings in Java are immutable. That means you can't change a String after it's created. Instead, what happens is a new String is created.
+
+-- The code we used to append Strings was inefficient
+As a result of a String being created, appending values like this is inefficient and not recommended. A better way of doing it is used something called a StringBuffer which can be changed.
+
+We need an understanding of classes before we tackle StringBuffer, and also, you will come across code written in the style I've used in this lecture so it's still useful for you to know how to do things this way.
+
+-- what are operators?
+Operators in Java are special symbols that perform specific operations on one, two, or three operands, and then return a result. As an example, we used the + (addition) operator to sum the value of two variables.
+There are many operands in Java.
+
+-- what is an operand?
+An operand is a term used to describe any object that is manipulated by an oprator. If we consider this statement.
+int myVar = 15 + 12;
+Then + is the operator, and 15 and 12 are the operands. Variables used instead of literals are also operands.
+double mySalaray = hoursWorked * hourlyRate;
+In the above line hoursWorked and hourlyRate are operands, and * (multiplication) is the operator.
+
+-- what is an Expression?
+An expression is formed by combining variables, literals, method return values (which we haven't covered yet) and operators.
+
+in the line below, 15 + 12 is the expression which has (or returns) 27 in this case.
+int myValue = 15 + 12;
+
+in the statement below, hoursWorked * hourlyRate is the expression. If hourseWorked was 10.00 and hourlyRate was 20.00 then the expression would return 200.00;
+double mySalary = hoursWorked * hourlyRate;
+
+-- What is a comment?
+Comments are ignored by the computer and are added to a program to help describe something. Comments are there for humans.
+
+We use // in front of any code, or on a blank line. Anything after the // right through to the end of the line is ignored by the computer.
+
+Aside from describing something about a program, comments can be used to temporarily disable code.
+
+-- if-then Statements in Java
+The if-then statement is the most basic of all the control flow statements. It tells your program to execute a certain section of code only if a particular test evaluates to true.
+
+This is known as conditional logic.
+
+-- Conditional Logic
+Conditional logic uses specific statements in Java to allow us to check a condition and execute certain code based on whether that condition (the expression) is true or false.
+
+-- if-then RUle - Always use a code block
+instead of using the if-statement as we can see here, we should instead use a code block.
+A code block allows more than one statement to be executed - a block of code.
+if (expression) {
+    // put one or more statements here
+}
+
+-- logical AND and logical or
+the AND operator comes in two flavors in Java, as does the OR operator.
+&& is the logical AND which operates on boolean operands - Checking if a given condition is true or false.
+
+you will almost always wanat to be doing this. The & is a bitwise operator working at the bit level.
+
+Likewise || is the logical OR what again operates on boolean operands - Checking if a given condition is true or false.
+
+Again, you will almost always want to be doing this. The | is a bitwise operator working at the bit level.
+
+-- difference between the assignment and Equal to operators
+int newValue = 50;
+if (newValue = 50) {
+    System.out.println("This is an error");
+}
+As you can see in the code we typed to declare the newValue int, it's using the assignment operator (one equal sign) to assign the value 50 to new value.
+What we needed to do in the code is to not use the assigment operator in the if-then statement, but rather the equal to operator which has two equal signs.
+if (newValue == 50) {
+    System.out.println("This is an error");
+}
+
+-- the NOT operator
+The ! or NOT operator is also known as the Logical complement operator.
+For use with booleans it tests the alternate value - we saw (isCar) test for true, by adding a ! operator before the value we can check the opposite - false in this case.
+
+boolean isCar = false;
+We can use either of these statements:
+if (isCar == false)
+if (!isCar)
+to check if the boolean isCar is false.
+
+it's generally recommended to use the abbreviated form of both for two reason. One to avoid the potential for error by accidentally using an assignment operator, and second the code is more concise.
+
+-- ternary operatord ?:
+int ageOfClient = 20;
+boolean isEighteenOrOver = ageOfClient == 20 ? true : false;
+Operand one - ageOfClient == 20 in this case is the condition we are checking. It needs to return true or false.
+Operand two - true here is the valu to assign to the variable isEighteenOrOver if the condition above is true.
+In this case, isEighteenOrOver is assigned the value true because ageOfClient has the value 20.
+
+-- method overloading
+Method overloading is a feature that allows a class to have more than one method having the same name if their argument lists are different.
+it is the ability to create multiple methods of the same name with different implementations.
+calls to an oveloaded method will run a specific implementation of that method
+it improves code readability and re-usability.
+it is easier to remember one method name instead of remembering multiple names.
+Achieves consistency in naming. One name for methods that are commonly used for example println.
+Overloaded methods give programmers the flexibility to call a similar method with different types of data.
+
+
