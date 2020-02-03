@@ -171,4 +171,57 @@ it is easier to remember one method name instead of remembering multiple names.
 Achieves consistency in naming. One name for methods that are commonly used for example println.
 Overloaded methods give programmers the flexibility to call a similar method with different types of data.
 
+-- format a number
+String.format("%.2f", 700.000000001); -> 700.00
+
+-- the for statement
+for (init; condition, increment) {
+    // statements
+}
+
+-- the shile loop
+while (condition) {
+    // statements
+}
+
+-- the do while loop
+do {
+    // statements
+} while (condition);
+
+-- parsing values fro a String
+String numberAsString = "2020";
+System.out.println("numberAsString = " + numberAsString);
+
+int number = Integer.parseInt(numberAsString);
+
+-- reading user input
+import java.util.Scanner;
+
+public class Main {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter your year of birth: ");
+        boolean hasNextInt = scanner.hasNextInt();
+
+        if (hasNextInt) {
+            int yearOfBirth = scanner.nextInt();
+            scanner.nextLine(); // handle next line character (enter key)
+            System.out.println("Enter your name: ");
+            String name = scanner.nextLine();
+            int age = 2020 - yearOfBirth;
+
+            if (age >= 0 && age <= 100) {
+                System.out.println("Your name is " + name + ", and you are " + age + " years old");
+            } else {
+                System.out.println("Invalid year of birth.");
+            }
+        } else {
+            System.out.println("Unable to parse year of birth");
+        }
+
+        scanner.close();
+    }
+}
 
