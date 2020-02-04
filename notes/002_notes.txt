@@ -225,3 +225,363 @@ public class Main {
     }
 }
 
+-- Reference vs Object vs Instance vs Class
+You probably noticed words like reference, object, instance and class in this section.
+These new concepts might be confusing at first. In this video you will find out exactly what each one of
+those words mean in the context of Java programming.
+
+Let's use the analogy of building a house to understand classes
+A class is basically a blueprint for a house, using the blueprint (plans) we can build as
+many house as we liked based on those plans.
+
+Each house you build (in other words instantiate using the new operator) is an object
+also known as an instance.
+
+Each house you build has an address (a physical location). In other words if you want to
+tell someone where you live, you give them your address (perhaps written in a piece of
+paper). This is known as a reference.
+
+You can copy that reference as many times as you like but their is still just one house. In
+other words we are copying the paper that has address on it not the house itself.
+
+We can pass references as parameters to constructors and methods
+
+-- this vs super
+let's discuss the difference between the this and the super keywords
+
+we'll also find out about the differences between this() and super() method calls
+
+let's discuss the super and the this keywords first
+
+the keyword super is used to access/call the parent class members (variables and methods)
+
+the keyword this is used to call the current class members (variables and methods). This
+is required when we have a parameter with the same name as an instance variable (field).
+
+note: we can use both of them anywhere in the class except static areas (the static block
+or a static method). Any attempt to do so will lead to compile-time errors (more on static
+later in the course)
+
+-- keyword this
+The keyword this is commonly used with constructors and setters, and optionally in getters (easier for
+begginers). In the example below we are using the this keyword in the constructor and setter since
+there is a parameter with the same name. In the getter we don't have any parameters so the this
+keyword is optional.
+... start
+class House {
+    private String color;
+
+    public House(String color) {
+        // this keyword is required, same parameter name as field
+        this.color = color;
+    }
+
+    public STring getColor() {
+        // this is optional
+        return color; // same as return this.color;
+    }
+
+    public void setColor(String color) {
+        // this keyword is required, same parameter names as field
+        this.color = color;
+    }
+}
+... end
+
+-- keyword super
+The keyword super is commonly used with method overriding, when we call a method
+with the same name from the parent class. In the example below we have a method
+printMethod that calls super.printMethod.
+
+In other words it's calling the method with the same name from the parent class. Without the keyword
+super in this case it would be recursive call. Meaning that the method would call it self forever (or until
+memory is fully used). That is why the super keyword is needed.
+... start
+class SuperClass { // parent class aka super class
+    public void printMethod() {
+        System.out.println("Printed in Superclass.");
+    }
+}
+
+class SubClass extends SuperClass {
+    // overrides method from parent
+    @Override
+    public void printMethod() {
+        super.printMethod(); // calls method in SuperClass (parent)
+        System.out.println("Printed in Subclass");
+    }
+}
+
+class MainClass {
+    public static void main(String[] args) {
+        SubClass s = new SubClass();
+        s.printMethod();
+    }
+}
+... end
+
+-- this() vs super() call
+In java we have the this() call and the super() call. NOtice the braces it is known as a call
+since it looks like a regular method call.
+
+Use this() to call a constructor from another overloaded constructor in the same class.
+The call to this() can be used only in a constructor, and it must be the first statement in a
+constructor. It's used with constructor chaining, in other words when one constructor
+calls another constructor, and helps to reduce duplicated code.
+
+The only way to call a parent constructor is by calling super(). This calls the parent
+constructor.
+
+The Java compiler puts a default call to super() if we don't add it, and it is always the no-args
+super which is inserted by compiler (constructor without arguments).
+
+The call to super() must be the first statement in each constructor.
+
+Event Abstract classes have constructors, although you can never instatiate an
+abstract class using the new keyword.
+
+An abstract class is still a super calss, so its constructors run when someone makes an
+instace of a concrete subclass.
+
+NOTE: a constructor can hava a call to super() or this() but never both.
+
+-- super() call example
+In this example we have a class Shape with x, y variables and class Rectangle
+that exptends SHape with variables width and height.
+
+In Rectangle, the 1st constructor we are calling the 2nd constructor
+
+The 2nd constructor calls the parent constructor with parameters x and y
+
+The parent constructor will initialize x,y variables while the 2nd Rectangle constructor
+will initialize the width and height variables.
+
+Here we have both super() and this() calls
+... start
+class Shape {
+    private int x;
+    private int y;
+
+    public Shape(int x, int y) {
+        this.x = x;
+        this.y = y;
+    }
+}
+
+class Rectangle extends Shape {
+    private int width;
+    private int height;
+
+    // 1st constructor
+    public Rectangle(int x, int y) {
+        this(x, y, 0, 0); // calls 2nd constructor
+    }
+
+    // 2nd constructor
+    public Rectangle(int x, int y, int width, int height) {
+        super(x, y); // calls constructor from parent (Shape)
+        this.width = width;
+        this.height = height;
+    }
+}
+... end
+
+-- Method overloading
+Method overloading means providing two or more separate methods in a class with
+the same name but different parameters.
+
+Method return tupe may or may not be different and that allows us to reuse the same
+method name.
+
+Overloading is very handy, it reduces duplicated code and we don't have to remember
+multiple method names.
+
+Overloading does not have anything to do with polymorphism but Java developers
+ofther refer to overlaoding as Compile Time Polymorphism.
+
+In other words the compiler decided which method is going to be called based on the
+method name, return type and argument list.
+
+We can overload static and instance methods.
+
+Usually overloading happens inside a single class, but a method can also be treated as
+overloaded in the subclass of that class.
+
+That is because a subclass inherits one version of the method from the parent class
+and then the subclass can have another overloaded version of the method.
+
+-- method overloading rules
+- methods will be considered overloaded if both follow the following rules
+    - methods must have the same method names
+    - methods must have different parameters
+- if methods follow the rules above then the may or may not
+    - have different return type.
+    - have different access modifiers.
+    - Throw different checked or unchecked exceptions.
+
+-- Method Overriding
+Method overriding means defining a method in a child class that already exists in the
+parent class with the same signature (same name, same arguments)
+
+By extending the parent class the child class gets all the methods defined in the parent
+class (those mehods are also known as derived methods).
+
+Method overriding is also known as Runtime Polymorphism and Dynamic Method Dispatch,
+because the method that is going to be called is decided at runtime by the JVM.
+
+Whe we override a method it's recommended to put @Override immediately above
+the method definition. This is an annotation that the compiler reads and will then
+show us an error if we don't follow overriding rules correctly.
+
+We can't override static methods only instance methods.
+
+-- method overriding rules
+Method will be considered overridden if we follow these rules
+    - it must have same name and arguments
+    - Return type ca be a subclass of the return type in the parent class.
+    - it can't ave a lower access modifier.
+    - For example, if the parent method is protected the using private in the child is not
+    allowed but using public in the child would be allowed.
+
+There are also some important points about method overriding to keep in mind
+    - only inherited methods can be Overridden, in other words methods can be
+    overridden only in child classes.
+    - Constructor and private methods cannot be overridden.
+    - Methods that are final cannot be overriden.
+    - A subclass can use super.methodName() to call the superclass version of an
+    overriden method.
+
+... start
+class Dog {
+
+    public void bark() {
+        System.out.println("woof");
+    }
+}
+
+class GermanShepherd extends Dog {
+
+    @Override
+    public void bark() {
+        System.out.println("woof woof woof");
+    }
+}
+... end
+
+-- Static vs Instance methods
+
+-- static methods
+
+Static methods are declared using a static modifier.
+
+Static methods can't access instance methods and instance variables directly.
+
+They are usually used for operations that don't require any data from an instance of
+the class (from 'this')
+
+If you remember, the this keyword is the current instance of a class.
+
+In static methods we can't use the this keyword.
+
+Whenever you see a method that does not use instance variables that method
+should be declared as a static method.
+
+For example main is a static method and it is caslled by the JVM when it start an
+application.
+
+-- instance methods
+Instance methods belong to an instance of a class.
+
+To use an instance method we have to instanctiate the class first usually by using
+the new keyword.
+
+Instance methods can access instance methods and instance variables directly.
+
+Instance methods can also access static methods and static varaibles directly.
+
+-- static or instance method
+
+- should a method be static?
+    - does it use any fields (instance variables or instance methods?)
+    - Yes
+        - it should probably be an instance method
+    - No
+        - it should probably be a static method
+
+-- static vs instance variables
+
+-- static variables
+declared by using the keyword static
+
+static variables are also known as static member variables
+
+every instance of that class shares the same static variable
+
+if changes are made to that variable, all other instances will see the effect of the change.
+
+static variables are not used very often but can sometimes be very useful
+
+for example, when reading user input using Scanner we will declare scanner as a static variable.
+
+That way static methods can access it directly.
+
+... start
+class Dog {
+    private static String name;
+
+    public Dog(String name) {
+        Dog.name = name;
+    }
+
+    public void printName() {
+        System.out.println("name= " + name);
+    }
+}
+
+
+public clas Main {
+    public static void main(String[] args) {
+        Dog rex = new Dog("rex"); // create instance (rex)
+        Dog fluffy = new Dog("fluffy); // create instance (fluffy)
+        rex.printName(); // prints fluffy
+        fluffy.printName(); // prints fluffy
+    }
+}
+... end
+
+-- instance variables
+the don't use the static keyword
+
+instance variables are also kwnon as fields or member variables
+
+instance variables belong to an instance of a class
+
+every instance has it's own copy of an instance variable
+
+every instance can have a different value (state)
+
+instance variables represent the state of an instance
+
+... start
+class Dog {
+    private String name;
+
+    public Dog(String name) {
+        this.name = name;
+    }
+
+    public void printName() {
+        System.out.println("name= " + name);
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Dog rex = new Dog("rex"); // create instance (rex)
+        Dog fluffy = new Dog("fluffy"); // create instance (fluffy)
+        rex.printName(); // prints rex
+        fluffy.printName(); // prints fluffy
+    } // prints rex
+    fluffy // prints fluffy
+}
+... end
