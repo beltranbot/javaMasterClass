@@ -338,7 +338,7 @@ super which is inserted by compiler (constructor without arguments).
 The call to super() must be the first statement in each constructor.
 
 Event Abstract classes have constructors, although you can never instatiate an
-abstract class using the new keyword.
+Abstract class using the new keyword.
 
 An abstract class is still a super calss, so its constructors run when someone makes an
 instace of a concrete subclass.
@@ -830,3 +830,82 @@ Gearbox mcLaren = new Gearbox(6);
 Gearbox.Gear first = mcLaren.new Gear(1, 12.3);
 System.out.println(first.driveSpeed(1000));
 ... end
+
+-- Abstract class vs an interface
+Let's discuss the main differences between an Abstract class and an interface
+and when to use either of them
+
+-- Abstract class
+Abstract class are similar to interfaces. You cannot instantiate them, and they may
+contain a mix of methods declared with or without an implementation.
+
+however, with Abstract classes, you can declare fields that are not static and final, and
+define public, protected, and private concrete methods.
+
+An Abstract calss can extend only one parent class but it can implement multiple interfaces.
+
+When an Abstract class is subclassed, the subclass usually provides implementatios for
+all of the abstract methods in its parent class.
+
+However, if it does not, then the subclass must also be declared abstract.
+
+- Use an Abstract class when...
+You want to share code among several closely related classes (Animal - with fields name, age...)
+
+You expect classes that extend your Absrtact class to have many common methods or
+fields or required access modifiers other than public (protected, private)
+
+You want to declare non static or non final fields (for example name, age), this enables
+you to define methods that can access and modify the state of an object (getName, setName)
+
+When you have a requirement for your base class to provide a default implementation of
+certain methods but other methods should be open to being overridden by child classes.
+
+summary: The purpose of an Abstract class is to provide a common definition of a base
+class that multiple derived classes can share.
+
+- Interface
+An interface is just the declaration of methods of a Class, it's not the implementation.
+
+In an interface, we define what kind of operation an object can perform. These
+operations are defined by the classes that implement the Interface.
+
+Interfaces form a contract between the class and the outside world, and this contract is
+enforced at build time by the compiler.
+
+You cannot instantiate them, and they may contain a mix of methods declared with or
+without an implementation. All methods in interfaces are automatically public and abstract.
+
+An interface can extend another interface.
+
+Interfaces are more flexible and can deal with a lot more stress on the design of your program
+than the implementation.
+
+By introducing interfaces into your program, you are really introducing points of variation
+at which you can plug in different implementations for that interface. An interface
+primary purpose is abstraction, decoupling the "what" from the "how".
+
+Note: since java 8 interfaces can contain default methods. In other words methods with implementation.
+The keyword default is used (mostly for backwrds compatibility),
+and static methods as well before Java 8 that not possible.
+
+Note: Since java 9 and interface can also contain private methods (commonly used when 
+two default methods in an interface share common code)
+
+- Use an interface when..
+You expect that unrelated classes will implement your interface. For example, the
+interfaces Comparable and Cloneable are implemented by many unrelated clases.
+
+You want to specify the behavior of a particular data type, but you are not concerned
+about who implements its behaviour.
+
+You want to separate different behaviour.
+
+The Collections API is an excellent example, we have the List interface and
+implementations ArrayList and LinkedList (more on that later in the course).
+
+The JDBC API is another excellent example. It exist of almost only interfaces. The
+concrete implementatiors are provided as "JDBC drivers". This enables you to write all
+the JDBC code independent of the database (DB) vendor. You will learn more about
+JDBC later in the course.
+
