@@ -909,3 +909,101 @@ concrete implementatiors are provided as "JDBC drivers". This enables you to wri
 the JDBC code independent of the database (DB) vendor. You will learn more about
 JDBC later in the course.
 
+-- Java naming conventions
+
+The things you will name in java are
+
+- Packages
+- Classes
+- Interfaces
+- Methods
+- Constants
+- Variables
+- Type parameters
+
+-- packages
+    - Always lower case
+    - Package names should be unique
+    - Use your internet domain name, reversed, as a prefix for the package name
+    - Oracle specify a convention for packge name at
+    https://docs.oracle.com/javase/specs/jls/se6/html/packages.html#7
+
+    Invalid domain name components
+        - Replace invalid characters (i.e. -) in domain name with an underscore
+        - Domain name components starting with a number should instead start with an underscore
+        - Domain name components that are java keywords should have that component start with an underscore
+    examples:
+        - switch.supplier.com -> com.supplier._switch
+        - 1world.com -> com._1world
+        - experts-exchange.com -> com.experts_exchange
+example packages names:
+    - java.lang
+    - java.io
+    - org.xml.sax.helpers
+    - com.timbuchalka.autoboxing
+
+-- Class names
+    - CamelCase
+    - Class names should be nouns (they represent things)
+    - Should start with a capital letter
+    - Each word in the nme should also start with a capital (e.g. LinkedList)
+
+    examples:
+        - ArrayList
+        - LinkedList
+        - String
+        - TopSong
+        - GearBox
+        - Main
+
+-- Interface names
+    - Capitalized like class names (CamelCase)
+    - Consider what objects implementing the interface will become of what they will be able to do.
+
+    examples:
+        - List
+        - Comparable
+        - Serializable
+
+-- Method names
+    - mixedCase
+    - Often verbs
+    - Reflec the function performed or the result returned
+
+    examples:
+        - size()
+        - getName()
+        - addPlayer()
+
+-- Constants
+    - ALL UPPER_CASE
+    - Separate words with underscore _.
+    - Declared using the final keyword
+
+    examples:
+        - Static final int MAX_INT
+        - Static final short SEVERITY_ERROR
+        - Static final dobule P1 = 3.141592653
+
+-- Variable names
+    - mixedCase
+    - Meaningful and indicative
+    - Start with lower case letter
+    - Do not use underscores
+    
+    examples:
+        - i
+        - league
+        - SydneySwans
+        - BoxLength
+
+-- Type parameters
+    - Single Character, capital letters
+    - Guidelines given at https://docs.oracle.com/javase/tutorial/java/generics/types.html
+
+    examples:
+    - E - Element (ysed extensively by the java Collections Framework)
+    - K - Key
+    - T - Type
+    - V - Value
+    - S, U, V, etc, 2nd, 3rd, 4th types
