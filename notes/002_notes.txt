@@ -1007,3 +1007,9 @@ example packages names:
     - T - Type
     - V - Value
     - S, U, V, etc, 2nd, 3rd, 4th types
+
+-- create JAR and import library in intellij
+    - create JAR
+        - File > project structure > Artifacts > add (+) > JAR > from modules with dependencies.. > select [extract to the target JAR]
+    - import JAR
+        - File > project structure > Libraries > add (+) > Java > select file from file system
