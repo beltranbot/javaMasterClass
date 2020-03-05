@@ -1059,3 +1059,21 @@ Collections.binarySearch(seats, requestedSeat, null); -> list, key, order define
 
 Theatre.Seat minSeat = Collections.min(SeatCopy);
 Theatre.Seat maxSeat = Collections.min(SeatCopy);
+
+-- Maps
+--
+Map<String, String> languages = new HashMap<>();
+languages.put("Java", "a compiled high level, object-orientated, platform independent language");
+languages.put("Python", "an interpreted, object-oriented, high-level programming language with dynamic semantics");
+languages.put("Algol", "an algorithmic language");
+languages.put("BASIC", "Beginners All Purposes Symbolic Instruction Code");
+languages.put("Lisp", "Therein lies madness");
+
+System.out.println(languages.get("Java"));
+--
+
+get keys from map -> exits.keySet()
+section 11 Adventure -> examples
+
+-- Immutable classes -> make a class in such a way that it can't be modified after creation
+

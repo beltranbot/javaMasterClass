@@ -5,19 +5,21 @@ public class Theatre {
     private final String theatreName;
     //    private Collection<Seat> seats = new ArrayList<>();
     private List<Seat> seats = new ArrayList<>();
-//    private Collection<Seat> seats = new LinkedHashSet<>();
+    //    private Collection<Seat> seats = new LinkedHashSet<>();
+    static final Comparator<Seat> PRICE_ORDER;
 
-    static final Comparator<Seat> PRICE_ORDER = new Comparator<>() {
-        @Override
-        public int compare(Seat seat1, Seat seat2) {
-            if (seat1.getPrice() < seat2.getPrice()) {
-                return -1;
-            } else if (seat1.getPrice() > seat2.getPrice()) {
-                return 1;
+    static {
+        PRICE_ORDER = new Comparator<Seat>() {
+            public int compare(Seat seat1, Seat seat2) {
+                if (seat1.getPrice() < seat2.getPrice()) {
+                    return -1;
+                } else if (seat1.getPrice() > seat2.getPrice()) {
+                    return 1;
+                }
+                return 0;
             }
-            return 0;
-        }
-    };
+        };
+    }
 
     public Theatre(String theatreName, int numRows, int seatsPerRow) {
         this.theatreName = theatreName;
