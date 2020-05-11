@@ -1091,3 +1091,12 @@ Collection
 
 Map
   - SortedMap
+
+-- Copy list
+List<Theatre.Seat> seatCopy = new ArrayList<>(theatre.seats); // shallow copy 
+
+Map
+print all the values of a Map
+for (String key : languages.keySet()) {
+    System.out.println(key + " : " + languages.get(key));
+}
