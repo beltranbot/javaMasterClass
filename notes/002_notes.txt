@@ -1080,3 +1080,14 @@ section 11 Adventure -> examples
 -- HashSet -> to implement correctly, overriding the equals and hashCode functions is necessary
 -- intellij -> Ctrl + o -> override methods
 @Override -> makes it so the compiler checks if you are using the right signature, otherwise you are overloading and not overriding the function
+
+-- Collections
+Collection
+  - Set
+    - SortedSet
+  - List
+  - Queue
+  - Deque
+
+Map
+  - SortedMap
