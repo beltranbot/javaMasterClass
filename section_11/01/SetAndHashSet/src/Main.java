@@ -81,13 +81,13 @@ public class Main {
         String strbody = "Earth";
         HeavenlyBody body = solarSystem.get(strbody);
         System.out.println("Moons of " + body.getName());
-        for (HeavenlyBody moon : body.getSatellities()) {
+        for (HeavenlyBody moon : body.getSatellites()) {
             System.out.println("\t" + moon.getName());
         }
 
         Set<HeavenlyBody> moons = new HashSet<>();
         for (HeavenlyBody planet : planets) {
-            moons.addAll(planet.getSatellities());
+            moons.addAll(planet.getSatellites());
         }
 
         System.out.println("All moons");
@@ -95,7 +95,11 @@ public class Main {
             System.out.println("\t" + moon.getName());
         }
 
+        HeavenlyBody pluto = new HeavenlyBody("Pluto", 842);
+        planets.add(pluto);
 
-
+        for (HeavenlyBody planet : planets) {
+            System.out.println(planet.getName() + ": " + planet.getOrbitalPeriod());
+        }
     }
 }
