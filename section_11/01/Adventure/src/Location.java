@@ -10,13 +10,13 @@ public class Location {
     public Location(int locationID, String description, Map<String, Integer> exits) {
         this.locationID = locationID;
         this.description = description;
-        this.exists = new HashMap<>(exits);
+        if (exits != null) {
+            this.exists = new HashMap<>(exits);
+        } else {
+            this.exists = new HashMap<>();
+        }
         this.exists.put("Q", 0);
     }
-
-//    public void addExit(String direction, int location) {
-//        exists.put(direction, location);
-//    }
 
     public int getLocationID() {
         return locationID;
