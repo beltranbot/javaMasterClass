@@ -1112,5 +1112,5 @@ if (languages.remove("Algol", "a family of algorithmic languages")) {
 // string split method
 String[] road = "You are standing at the end of a road before a small brick building".split("");
 for (String i : road) {
-    System.out.println(i);
+     System.out.println(i);
 }
