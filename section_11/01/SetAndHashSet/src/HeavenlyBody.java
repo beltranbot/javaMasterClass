@@ -1,7 +1,7 @@
 import java.util.HashSet;
 import java.util.Set;
 
-public class HeavenlyBody {
+public final class HeavenlyBody {
 
     private final String name;
     private final double orbitalPeriod;
