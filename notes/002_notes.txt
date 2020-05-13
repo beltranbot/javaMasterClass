@@ -1139,3 +1139,13 @@ s1.retainAlll(s2);
 s1.removeAll(s2);
 
 note: all bulk operations are destructive. Therefore creating a new set from the existing ones is a good idea.
+
+-- declaring an enum
+public enum BodyTypes {
+    START,
+    PLANET,
+    DWARF_PLANET,
+    MOON,
+    COMET,
+    ASTEROID
+}
