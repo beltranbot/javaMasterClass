@@ -1164,3 +1164,11 @@ public String toString() {
     }
     return s + "Total stock value " + totalCost;
 }
+
+-- set up javafx
+    - downlaod from: https://gluonhq.com/products/javafx/
+    - extract the contents in a location (javafx-sdk-11.0.2)
+    - in the welcome window of intellij > configure > structure for new projects
+    - in the emerging window, select "global libraries" in the left side of the window
+    - click the "+" (add) icon and select "java"
+    - navigate to the folder that you just extracted and withing the lib folder, select all the .jar fields
