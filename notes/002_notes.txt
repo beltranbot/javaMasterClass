@@ -1245,3 +1245,6 @@ primaryStage.show();
     </Label>
 </GridPane>
 
+-- javafx layouts google docs: https://docs.google.com/document/d/1erZfwwD0KGJieC-GMo38VRjttDtMej7dWcs9314NV9M
+- Gridpane
+    children overlap over the defaul position (row: 0, col:0), this is why we have to give them positions
