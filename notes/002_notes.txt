@@ -1216,3 +1216,32 @@ view is the fxml, and the controller is the code tha determines what happens whe
 user interacts with the UI. Essentially the controller handles events, which we'll cover in a
 letter lesson.
 
+-- setting default javafx window manually
+GridPane root = new GridPane();
+root.setAlignment(Pos.CENTER);
+root.setVgap(10);
+root.setHgap(10);
+Label greeting = new Label("Welcome to javafx!");
+greeting.setTextFill(Color.GREEN);
+greeting.setFont(Font.font("Times New Roman", FontWeight.BOLD, 70));
+root.getChildren().add(greeting);
+primaryStage.setTitle("Hello JavaFX!");
+primaryStage.setScene(new Scene(root, 1000, 275));
+primaryStage.show();
+
+-- using java fxml
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.GridPane?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.text.Font?>
+<GridPane fx:controller="sample.Controller"
+          xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
+    <Label text="Welcome to javafx!" textFill="green">
+        <font>
+            <Font name="Time New Roman bold" size="70"></Font>
+        </font>
+    </Label>
+</GridPane>
+
