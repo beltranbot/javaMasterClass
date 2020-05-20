@@ -1172,3 +1172,32 @@ public String toString() {
     - in the emerging window, select "global libraries" in the left side of the window
     - click the "+" (add) icon and select "java"
     - navigate to the folder that you just extracted and withing the lib folder, select all the .jar fields
+
+-- create your first javafx application
+    - from the intellij welcome window select the "+ create new project" option
+    - in the new project window select the "java fx" option in the left panel
+    - continue creating the project as you would normally
+    - when the editor is initialited you will find some errors, these occur because
+    javafx is no longer part of the default java jdk, because of this we have to configure it first
+    - these steps need to be followed EVERYTIME you want to use javafx in a new project
+    - right click the project folder in the left panel and select the "Open module settings" (F4) option
+    - in the project settings > project
+    - make sure that the project language level is the same as the project sdk.
+    - in the module section, make sure is the same version as well.
+    - in the platform settings > global libraries option
+    - right click the javafx library and select the "add to modules.." option
+    - confirm you want to add the libraries to the project.
+    - if you try to run the application at this point you will get an error.
+    "javafx runtime components are missing"
+    - right click the src folder of the project > new
+    - select module-info.java
+    - in the newly created module-info.java file, add the following content.
+... start:javafx001
+module HelloWorldFx {
+    requires javafx.fxml;
+    requires javafx.controls;
+
+    opens sample;
+}
+... end:javafx001
+    - add this point you should be able to run the application successfully
