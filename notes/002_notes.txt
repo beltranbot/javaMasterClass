@@ -1201,3 +1201,18 @@ module HelloWorldFx {
 }
 ... end:javafx001
     - add this point you should be able to run the application successfully
+
+-- java fx overview
+Javafx was designed with the MVC, or model-view-controller pattern in mind. In a
+nutshell, this pattern keeps the code that handles an application's data separate from the
+UI code.
+
+Because of this, when we're using the MVC pattern, we wouldn't mix the code that deals
+with the UI and the code taht manipulates the application data in the same class. The
+controller is sort of the middleman between the UI and the data.
+
+When working with javafx, the model corresponds to the application's data model, the
+view is the fxml, and the controller is the code tha determines what happens when a
+user interacts with the UI. Essentially the controller handles events, which we'll cover in a
+letter lesson.
+
