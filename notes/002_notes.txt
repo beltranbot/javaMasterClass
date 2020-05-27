@@ -1248,3 +1248,22 @@ primaryStage.show();
 -- javafx layouts google docs: https://docs.google.com/document/d/1erZfwwD0KGJieC-GMo38VRjttDtMej7dWcs9314NV9M
 - Gridpane
     children overlap over the defaul position (row: 0, col:0), this is why we have to give them positions
+
+-- download java look and feel graphic repository
+download link: https://www.oracle.com/technetwork/java/repository-140393.html
+    - unzip the .zip you need the .jar
+    - in the project go to the project folder > open module settings (F4)
+    - in the dependencies tab, selected the + symbol
+    - seelct 1 jar or directories
+    - go to the unzipped jar and selected
+    - in the "choose categories of selected files", choose Classes
+    - REMEMBER to add the new library to the module-info.java file
+---
+module Controls {
+    requires javafx.fxml;
+    requires javafx.controls;
+    requires jlfgr;
+
+    opens sample;
+}
+---
