@@ -3,6 +3,7 @@
 
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
 <GridPane fx:controller="sample.Controller"
           xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
     <TextField GridPane.rowIndex="0" GridPane.columnIndex="0"
@@ -24,5 +25,9 @@
               GridPane.columnSpan="2"
               fx:id="ourCheckbox"
               onAction="#handleChange"
+    />
+    <Label GridPane.rowIndex="3" GridPane.columnIndex="0"
+           fx:id="ourLabel"
+           text="Nothing has happened"
     />
 </GridPane>
