@@ -1267,3 +1267,10 @@ module Controls {
     opens sample;
 }
 ---
+
+-- halt program execution
+try {
+    Thread.sleep(10000);
+} catch(InterruptedException event) {
+    // we don't care about this
+}
