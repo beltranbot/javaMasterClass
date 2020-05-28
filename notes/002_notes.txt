@@ -1274,3 +1274,7 @@ try {
 } catch(InterruptedException event) {
     // we don't care about this
 }
+
+-- todo list app
+    - when editing name of files you might need to configure the main class name, top right of the IDE "Main" > "edit configurations..."
+    - left bar > Application > Main > in the Main class field set "com.beltranbot.todolist.Main"
