@@ -17,6 +17,10 @@
 <?import java.lang.String?>
 
 <?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.Spinner?>
+<?import javafx.scene.control.ColorPicker?>
+<?import javafx.scene.control.DatePicker?>
 <GridPane fx:controller="sample.Controller"
           xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
     <Button GridPane.rowIndex="0"
@@ -96,11 +100,11 @@
     <TextField
             GridPane.rowIndex="3"
             GridPane.columnIndex="0"
-    ></TextField>
+    />
     <PasswordField
             GridPane.rowIndex="3"
             GridPane.columnIndex="1"
-    ></PasswordField>
+    />
     <ComboBox
             GridPane.rowIndex="4"
             GridPane.ColumnIndex="0"
@@ -108,11 +112,11 @@
     >
         <items>
             <FXCollections fx:factory="observableArrayList">
-                <String fx:value="This is Option 1"></String>
-                <String fx:value="This is Option 2"></String>
-                <String fx:value="This is Option 3"></String>
-                <String fx:value="This is Option 4"></String>
-                <String fx:value="This is Option 5"></String>
+                <String fx:value="This is Option 1"/>
+                <String fx:value="This is Option 2"/>
+                <String fx:value="This is Option 3"/>
+                <String fx:value="This is Option 4"/>
+                <String fx:value="This is Option 5"/>
             </FXCollections>
         </items>
         <value>
@@ -130,4 +134,25 @@
             </FXCollections>
         </items>
     </ChoiceBox>
+
+    <Slider GridPane.rowIndex="5" GridPane.columnIndex="0"
+            GridPane.columnSpan="4"
+            min="0"
+            max="100"
+            showTickLabels="true"
+            showTickMarks="true"
+            minorTickCount="4"
+            snapToTicks="true"
+    />
+
+    <Spinner GridPane.rowIndex="6" GridPane.columnIndex="0"
+             min="0"
+             max="100"
+             editable="true"
+             initialValue="50"
+    />
+
+    <ColorPicker GridPane.rowIndex="7" GridPane.columnIndex="0"/>
+
+    <DatePicker GridPane.rowIndex="7" GridPane.columnIndex="0"/>
 </GridPane>
