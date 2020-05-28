@@ -1,0 +1,14 @@
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.control.Button?>
+
+<?import javafx.scene.control.TextField?>
+<GridPane fx:controller="sample.Controller"
+          xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
+    <TextField GridPane.rowIndex="0" GridPane.columnIndex="0"
+               fx:id="nameField"
+    />
+    <Button GridPane.rowIndex="1" GridPane.columnIndex="0"
+            text="Say hello"
+            onAction="#onButtonClicked"
+    />
+</GridPane>

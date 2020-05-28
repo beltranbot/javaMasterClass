@@ -27,7 +27,7 @@ A short can store a large range of numbers and occupies 16 bits, and has a width
 
 An int, has a much larger range as we know and occupiets 32 bits, and has a width of 32.
 
-The poin here is that each primitive type occupies a different amount of memory - we can see that an int needs four times the amount of space, than a byte does for example.
+The point here is that each primitive type occupies a different amount of memory - we can see that an int needs four times the amount of space, than a byte does for example.
 
 -- casting in java
 Casting meanns to treat or convert a number from on type to another. We put the type we want the number to be in parenthesis like this:
