@@ -6,7 +6,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
 
@@ -51,6 +50,9 @@ public class Controller {
     public void showNewItemDialog() {
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.initOwner(mainBorderPane.getScene().getWindow());
+        dialog.setTitle("Add new Todo Item");
+        dialog.setHeaderText("use this dialog to create a new todo item");
+
         FXMLLoader fxmlLoader = new FXMLLoader();
         fxmlLoader.setLocation(getClass().getResource("todoItemDialog.fxml"));
         try {
@@ -60,18 +62,20 @@ public class Controller {
             e.printStackTrace();
             return;
         }
+
         dialog.getDialogPane().getButtonTypes().add(ButtonType.OK);
         dialog.getDialogPane().getButtonTypes().add(ButtonType.CANCEL);
 
         Optional<ButtonType> result = dialog.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             DialogController dialogController = fxmlLoader.getController();
-            dialogController.processResults();
+            TodoItem todoItem = dialogController.processResults();
+             todoListView.getItems().setAll(TodoData.getInstance().getTodoItems());
+            todoListView.getSelectionModel().select(todoItem);
             System.out.println("Ok pressed");
         } else {
             System.out.println("Cancel pressed");
         }
-
     }
 
 }
