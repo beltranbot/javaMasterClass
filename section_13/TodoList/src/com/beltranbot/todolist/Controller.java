@@ -77,11 +77,4 @@ public class Controller {
         todoListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         todoListView.getSelectionModel().selectFirst();
     }
-
-//    @FXML
-//    public void handleClickListView() {
-//        TodoItem item = todoListView.getSelectionModel().getSelectedItem();
-//        itemDetailsTextArea.setText(item.getDetails());
-//        deadLineLabel.setText(item.getDeadline().toString());
-//    }
 }

@@ -1301,3 +1301,43 @@ todoListView.getSelectionModel().selectedItemProperty().addListener(new ChangeLi
 -- DateTimeFormatter usage
 DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
 deadLineLabel.setText(dateTimeFormatter.format(item.getDeadline()));
+
+-- string formatting
+String.format(
+        "%s\t%s\t%s",
+        todoItem.getShortDescription(),
+        todoItem.getDetails(),
+        todoItem.getDeadline().toString()
+);
+
+-- write to a file (throws IOException)
+Path path = Paths.get(filename);
+BufferedWriter bufferedWriter = Files.newBufferedWriter(path);
+try {
+    bufferedWriter.write("text");
+    bufferedWriter.newLine(); 
+} finally {
+    if (bufferedWriter != null) {
+        bufferedWriter.close();
+    }
+}
+
+-- read from a file (throws IOException)
+Path path = Paths.get(filename);
+BufferedReader bufferedReader = Files.newBufferedReader(path);
+
+String input;
+try {
+    while ((input = bufferedReader.readLine()) != null) {
+        System.out.println(input);
+    }
+} finally {
+    if (bufferedReader != null) {
+        bufferedReader.close();
+    }
+}
+
+
+-- parse string to date
+DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+LocalDate date = LocalDate.parse(dateString, dateTimeFormatter);
