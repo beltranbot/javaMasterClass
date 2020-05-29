@@ -1278,3 +1278,22 @@ try {
 -- todo list app
     - when editing name of files you might need to configure the main class name, top right of the IDE "Main" > "edit configurations..."
     - left bar > Application > Main > in the Main class field set "com.beltranbot.todolist.Main"
+
+-- StringBuilder usage
+StringBuilder stringBuilder = new StringBuilder(item.getDetails());
+stringBuilder.append("\n\n\n\n");
+stringBuilder.append("Due: ");
+stringBuilder.append(item.getDeadline().toString());
+itemDetailsTextArea.setText(stringBuilder.toString());
+
+-- add change listener
+todoListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TodoItem>() {
+    @Override
+    public void changed(ObservableValue<? extends TodoItem> observableValue, TodoItem oldValue, TodoItem newValue) {
+        if (newValue != null) {
+            TodoItem item = todoListView.getSelectionModel().getSelectedItem();
+            itemDetailsTextArea.setText(item.getDetails());
+            deadLineLabel.setText(item.getDeadline().toString());
+        }
+    }
+});
