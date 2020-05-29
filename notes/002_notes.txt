@@ -1310,6 +1310,19 @@ String.format(
         todoItem.getDeadline().toString()
 );
 
+-- for io operations
+import javal.io.BufferedReader;
+import javal.io.BufferedWriter;
+import java.io.IOException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+-- for date operations
+import java.time.LocalDate;
+import java.time.format.DeateTimeFormatter;
+
 -- write to a file (throws IOException)
 Path path = Paths.get(filename);
 BufferedWriter bufferedWriter = Files.newBufferedWriter(path);
@@ -1341,3 +1354,7 @@ try {
 -- parse string to date
 DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
 LocalDate date = LocalDate.parse(dateString, dateTimeFormatter);
+
+-- get month
+import java.time.Month;
+Month.JULY;

@@ -26,7 +26,7 @@ public class TodoData {
     }
 
     private TodoData() {
-        dateTimeFormatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        dateTimeFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     }
 
     public static void setInstance(TodoData instance) {
@@ -45,9 +45,9 @@ public class TodoData {
         return todoItems;
     }
 
-    public void setTodoItems(List<TodoItem> todoItems) {
-        this.todoItems = todoItems;
-    }
+//    public void setTodoItems(List<TodoItem> todoItems) {
+//        this.todoItems = todoItems;
+//    }
 
     public DateTimeFormatter getDateTimeFormatter() {
         return dateTimeFormatter;
