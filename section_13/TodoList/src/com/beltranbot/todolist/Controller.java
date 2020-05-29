@@ -1,6 +1,10 @@
 package com.beltranbot.todolist;
 
 import com.beltranbot.todolist.datamodel.TodoItem;
+import javafx.fxml.FXML;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
+import javafx.scene.control.TextArea;
 
 import java.time.LocalDate;
 import java.time.Month;
@@ -8,8 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Controller {
+
     private List<TodoItem> todoItems;
 
+    @FXML
+    private ListView<TodoItem> todoListView;
+    @FXML
+    private TextArea itemDetailsTextArea;
+
+    @FXML
     private void initialize() {
         TodoItem item1 = new TodoItem(
                 "Mail birthday card",
@@ -43,5 +54,18 @@ public class Controller {
         todoItems.add(item3);
         todoItems.add(item4);
         todoItems.add(item5);
+        todoListView.getItems().setAll(todoItems);
+        todoListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    }
+
+    @FXML
+    public void handleClickListView() {
+        TodoItem item = todoListView.getSelectionModel().getSelectedItem();
+
+        StringBuilder stringBuilder = new StringBuilder(item.getDetails());
+        stringBuilder.append("\n\n\n\n");
+        stringBuilder.append("Due: ");
+        stringBuilder.append(item.getDeadline().toString());
+        itemDetailsTextArea.setText(stringBuilder.toString());
     }
 }
