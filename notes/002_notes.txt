@@ -1297,3 +1297,7 @@ todoListView.getSelectionModel().selectedItemProperty().addListener(new ChangeLi
         }
     }
 });
+
+-- DateTimeFormatter usage
+DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern("MMMM d, yyyy");
+deadLineLabel.setText(dateTimeFormatter.format(item.getDeadline()));
