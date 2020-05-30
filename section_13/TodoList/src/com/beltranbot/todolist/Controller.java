@@ -4,6 +4,7 @@ import com.beltranbot.todolist.datamodel.TodoData;
 import com.beltranbot.todolist.datamodel.TodoItem;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -17,6 +18,7 @@ import javafx.util.Callback;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -34,6 +36,8 @@ public class Controller {
     private BorderPane mainBorderPane;
     @FXML
     private ContextMenu listContextMenu;
+    @FXML
+    private ToggleButton toggleButton;
 
     @FXML
     private void initialize() {
@@ -60,7 +64,17 @@ public class Controller {
             }
         });
 
-        todoListView.setItems(TodoData.getInstance().getTodoItems());
+        SortedList<TodoItem> sortedlist = new SortedList<>(
+                TodoData.getInstance().getTodoItems(),
+                new Comparator<TodoItem>() {
+                    @Override
+                    public int compare(TodoItem o1, TodoItem o2) {
+                        return o1.getDeadline().compareTo(o2.getDeadline());
+                    }
+                }
+        );
+
+        todoListView.setItems(sortedlist);
         todoListView.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
         todoListView.getSelectionModel().selectFirst();
 
@@ -149,4 +163,12 @@ public class Controller {
         }
     }
 
+    @FXML
+    public void handleFilterButton() {
+        if (toggleButton.isSelected()) {
+
+        } else {
+            
+        }
+    }
 }
