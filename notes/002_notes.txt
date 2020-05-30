@@ -1361,3 +1361,7 @@ Month.JULY;
 
 --- get current date
 LocalDate.now()
+
+-- file chooser in javafx
+FileChooser chooser = new FileChooser();
+chooser.showOpenDialog(gridPane.getScene().getWindow()); // pass the window to prevent opening multiple file choosers
