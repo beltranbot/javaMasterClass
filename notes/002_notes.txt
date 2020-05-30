@@ -1365,3 +1365,12 @@ LocalDate.now()
 -- file chooser in javafx
 FileChooser chooser = new FileChooser();
 chooser.showOpenDialog(gridPane.getScene().getWindow()); // pass the window to prevent opening multiple file choosers
+
+-- directory chooser in javafx
+DirectoryChooser chooser = new DirectoryChooser();
+File file = chooser.showDialog(gridPane.getScene().getWindow());
+if (file != null) {
+    System.out.println(file.getPath());
+} else {
+    System.out.println("Chooser was cancelled");
+}
