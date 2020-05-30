@@ -1358,3 +1358,6 @@ LocalDate date = LocalDate.parse(dateString, dateTimeFormatter);
 -- get month
 import java.time.Month;
 Month.JULY;
+
+--- get current date
+LocalDate.now()
