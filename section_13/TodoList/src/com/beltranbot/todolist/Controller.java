@@ -2,8 +2,10 @@ package com.beltranbot.todolist;
 
 import com.beltranbot.todolist.datamodel.TodoData;
 import com.beltranbot.todolist.datamodel.TodoItem;
+import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -21,10 +23,14 @@ import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Predicate;
 
 public class Controller {
 
     private List<TodoItem> todoItems;
+    private FilteredList<TodoItem> filteredList;
+    private Predicate<TodoItem> predicateAllItems;
+    private Predicate<TodoItem> predicateTodayItems;
 
     @FXML
     private ListView<TodoItem> todoListView;
@@ -37,10 +43,13 @@ public class Controller {
     @FXML
     private ContextMenu listContextMenu;
     @FXML
-    private ToggleButton toggleButton;
+    private ToggleButton filterToggleButton;
 
     @FXML
     private void initialize() {
+
+        predicateAllItems = todoItem -> true;
+        predicateTodayItems = todoItem -> todoItem.getDeadline().isEqual(LocalDate.now());
 
         listContextMenu = new ContextMenu();
         MenuItem deleteMenuItem = new MenuItem("Delete");
@@ -64,8 +73,9 @@ public class Controller {
             }
         });
 
+        filteredList = new FilteredList<>(TodoData.getInstance().getTodoItems(), predicateAllItems);
         SortedList<TodoItem> sortedlist = new SortedList<>(
-                TodoData.getInstance().getTodoItems(),
+                filteredList,
                 new Comparator<TodoItem>() {
                     @Override
                     public int compare(TodoItem o1, TodoItem o2) {
@@ -165,10 +175,26 @@ public class Controller {
 
     @FXML
     public void handleFilterButton() {
-        if (toggleButton.isSelected()) {
+        TodoItem todoItem = todoListView.getSelectionModel().getSelectedItem();
 
+        filteredList.setPredicate(
+                filterToggleButton.isSelected() ?
+                        predicateTodayItems :
+                        predicateAllItems
+        );
+
+        if (filteredList.isEmpty()) {
+            itemDetailsTextArea.clear();
+            deadLineLabel.setText("");
+        } else if (filteredList.contains(todoItem)) {
+            todoListView.getSelectionModel().select(todoItem);
         } else {
-            
+            todoListView.getSelectionModel().selectFirst();
         }
+    }
+
+    @FXML
+    public void handleExit() {
+        Platform.exit();
     }
 }
