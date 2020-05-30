@@ -9,6 +9,8 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.paint.Color;
 import javafx.util.Callback;
@@ -45,7 +47,7 @@ public class Controller {
                 deleteItem(todoItem);
             }
         });
-        listContextMenu.getItems().addAll(deleteMenuItem);
+        listContextMenu.getItems().add(deleteMenuItem);
         todoListView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<TodoItem>() {
             @Override
             public void changed(ObservableValue<? extends TodoItem> observableValue, TodoItem oldValue, TodoItem newValue) {
@@ -137,5 +139,14 @@ public class Controller {
     }
 
 
+    @FXML
+    public void handleKeyPressed(KeyEvent keyEvent) {
+        TodoItem todoItem = todoListView.getSelectionModel().getSelectedItem();
+        if (todoItem != null) {
+            if (keyEvent.getCode().equals(KeyCode.DELETE)) {
+                deleteItem(todoItem);
+            }
+        }
+    }
 
 }
