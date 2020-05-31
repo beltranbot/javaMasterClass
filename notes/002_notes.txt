@@ -1442,3 +1442,8 @@ try {
 -- open url in webview
 WebEngine webEngine = webView.getEngine();
 webEngine.load(urlString);
+
+-- install scene builder
+    - donwload installer from https://gluonhq.com/products/scene-builder/
+    - in the welcome window of intellij got to configure > settings > languages and frameworks
+    - select javafx and then choose the route of the SceneBuilder location (/opt/SceneBuilder/SceneBuilder)
