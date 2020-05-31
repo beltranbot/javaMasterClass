@@ -1374,3 +1374,71 @@ if (file != null) {
 } else {
     System.out.println("Chooser was cancelled");
 }
+
+-- save file and filters
+FileChooser chooser = new FileChooser();
+chooser.setTitle("Save application file");
+chooser.getExtensionFilters().addAll(
+    new FileChooser.ExtensionFilter("Text", "*.txt"),
+    new FileChooser.ExtensionFilter("PDF", "*.pdf"),
+    new FileChooser.ExtensionFilter("Image Files", "*.jpg", "*.png", "*.gif"),
+    new FileChooser.ExtensionFilter("All types", "*.*")
+);
+File file = chooser.showSaveDialog(gridPane.getScene().getWindow());
+if (file != null) {
+    System.out.println(file.getPath());
+} else {
+    System.out.println("Chooser was cancelled");
+}
+
+-- choose multiple dialog
+FileChooser chooser = new FileChooser();
+chooser.setTitle("Save application file");
+chooser.getExtensionFilters().addAll(
+    new FileChooser.ExtensionFilter("Text", "*.txt"),
+    new FileChooser.ExtensionFilter("PDF", "*.pdf"),
+    new FileChooser.ExtensionFilter("Image Files", "*.jpg", "*.png", "*.gif"),
+    new FileChooser.ExtensionFilter("All types", "*.*")
+);
+List<File> files = chooser.showOpenMultipleDialog(gridPane.getScene().getWindow());
+if (files != null) {
+    for(File file : files) {
+        System.out.println(file.getPath());
+    }
+} else {
+    System.out.println("Chooser was cancelled");
+}
+
+-- open web browser from java fx
+-> note:
+/* mind the module-info.java
+module JavaFXApplication {
+
+    requires javafx.fxml;
+    requires javafx.controls;
+    requires javafx.web;
+    requires java.desktop;
+
+    opens sample;
+}
+*/
+String osName = System.getProperty("os.name");
+String urlString = "http://www.javafx.com";
+
+try {
+    if (osName.equals("Linux")) {
+        if (Runtime.getRuntime().exec(new String[]{"which", "xdg-open"}).getInputStream().read() != -1) {
+            Runtime.getRuntime().exec(new String[]{"xdg-open", urlString});
+        }
+    } else {
+        Desktop.getDesktop().browse(new URI(urlString));
+    }
+} catch (IOException ioException) {
+    ioException.printStackTrace();
+} catch (URISyntaxException uriSyntaxException) {
+    uriSyntaxException.printStackTrace();
+}
+
+-- open url in webview
+WebEngine webEngine = webView.getEngine();
+webEngine.load(urlString);
