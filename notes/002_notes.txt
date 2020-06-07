@@ -1474,3 +1474,12 @@ Exception: an events that occur during the excecution of a program that prevents
 
 -- throw custom exception messages
 throw new ArithmeticException("attempt to divide by zero");
+
+-- check for multiple exceptions
+try {
+    int result = divide();
+    System.out.println(result);
+} catch (NoSuchElementException | ArithmeticException exception) {
+    System.out.println(exception.toString());
+    System.out.println("Unable to perform division, autopilot shitting down");
+}

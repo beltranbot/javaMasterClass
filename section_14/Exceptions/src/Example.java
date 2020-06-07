@@ -5,28 +5,20 @@ import java.util.Scanner;
 public class Example {
 
     public static void main(String[] args) {
-        int result = divide();
-
-        System.out.println(result);
+        try {
+            int result = divide();
+            System.out.println(result);
+        } catch (NoSuchElementException | ArithmeticException exception) {
+            System.out.println(exception.toString());
+            System.out.println("Unable to perform division, autopilot shitting down");
+        }
     }
 
     private static int divide() {
-        int x;
-        int y;
-        try {
-            x = getInt();
-            y = getInt();
-        } catch (NoSuchElementException noSuchElementException) {
-            throw new ArithmeticException("no suitable input");
-        }
-
+        int x = getInt();
+        int y = getInt();
         System.out.println("x is: " + x + " y is" + ": " + y);
-
-        try {
-            return x / y;
-        } catch(ArithmeticException arithmeticException) {
-            throw new ArithmeticException("attempt to divide by zero");
-        }
+        return x / y;
     }
 
     private static int getInt() {
