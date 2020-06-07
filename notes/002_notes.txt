@@ -1447,3 +1447,19 @@ webEngine.load(urlString);
     - donwload installer from https://gluonhq.com/products/scene-builder/
     - in the welcome window of intellij got to configure > settings > languages and frameworks
     - select javafx and then choose the route of the SceneBuilder location (/opt/SceneBuilder/SceneBuilder)
+
+-- java fx challenge
+For this challenge, you'll create a simple contacts application that has a single main window.
+the application will allow the user to add a contact, edit a contact, and delete a contact.
+You'll display the contacts using the TableView control.
+
+-- module-info.java
+module JavaFxChalenge {
+
+    requires javafx.fxml;
+    requires javafx.controls;
+    requires java.xml;
+
+    opens sample;
+    exports datamodel;
+}
