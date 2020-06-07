@@ -5,4 +5,5 @@ module JavaFxChalenge {
     requires java.xml;
 
     opens sample;
+    exports datamodel;
 }

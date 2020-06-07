@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<contacts>
+<contact>
+	<first_name>tim</first_name>
+	<last_name>buchalka</last_name>
+	<phone_number>1234</phone_number>
+	<notes>my notes</notes>
+</contact>
+<contact>
+	<first_name>brain</first_name>
+	<last_name>johnson</last_name>
+	<phone_number>5678</phone_number>
+	<notes>notes</notes>
+</contact>
+<contact>
+	<first_name>louise</first_name>
+	<last_name>richter</last_name>
+	<phone_number>1290</phone_number>
+	<notes></notes>
+</contact>
+<contact>
+	<first_name>zayn</first_name>
+	<last_name>jones</last_name>
+	<phone_number>6321</phone_number>
+	<notes>more notes</notes>
+</contact>
+</contacts>

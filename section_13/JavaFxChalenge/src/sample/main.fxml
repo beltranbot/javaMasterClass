@@ -9,6 +9,7 @@
 <?import javafx.scene.control.MenuItem?>
 <BorderPane fx:controller="sample.Controller"
             xmlns:fx="http://javafx.com/fxml"
+            fx:id="mainPanel"
 >
     <top>
         <MenuBar>
@@ -42,7 +43,7 @@
                         <PropertyValueFactory property="phoneNumber"/>
                     </cellValueFactory>
                 </TableColumn>
-                <TableColumn text="Notes">
+                <TableColumn text="notes">
                     <cellValueFactory>
                         <PropertyValueFactory property="notes"/>
                     </cellValueFactory>
