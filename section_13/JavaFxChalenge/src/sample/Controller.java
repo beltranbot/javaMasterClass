@@ -93,4 +93,32 @@ public class Controller {
         }
     }
 
+    @FXML
+    public void deleteContact() {
+        Contact selectedContact = contactsTable.getSelectionModel().getSelectedItem();
+        if (selectedContact == null) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("No contact selected");
+            alert.setHeaderText(null);
+            alert.setContentText("Please select the contact you want to delete.");
+            alert.showAndWait();
+            return;
+        }
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete Contact");
+        alert.setHeaderText(null);
+        alert.setContentText(
+                "Are you sure you want to delete the selected contact: " +
+                        selectedContact.getFirstName() + " " +
+                        selectedContact.getLastName()
+        );
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
+            data.deleteContact(selectedContact);
+            data.saveContacts();
+        }
+
+    }
+
 }
