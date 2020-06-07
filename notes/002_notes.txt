@@ -1463,3 +1463,11 @@ module JavaFxChalenge {
     opens sample;
     exports datamodel;
 }
+
+-- basic input & output including java.util
+-- exceptions
+
+LBYL -> look before you leave
+EAFP -> easier to ask for forgiveness than permission
+
+Exception: an events that occur during the excecution of a program that prevents the normal flow of the program instructions.
