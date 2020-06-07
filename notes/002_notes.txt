@@ -1471,3 +1471,6 @@ LBYL -> look before you leave
 EAFP -> easier to ask for forgiveness than permission
 
 Exception: an events that occur during the excecution of a program that prevents the normal flow of the program instructions.
+
+-- throw custom exception messages
+throw new ArithmeticException("attempt to divide by zero");
