@@ -1,5 +1,7 @@
 package com.beltranbot;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,6 +12,28 @@ import java.util.Set;
  */
 public class Locations implements Map<Integer, Location> {
     private static Map<Integer, Location> locations = new HashMap<Integer, Location>();
+
+    public static void main (String[] args) {
+        FileWriter locationsFile = null;
+        try {
+            locationsFile = new FileWriter("location.txt");
+            for (Location location : locations.values()) {
+                locationsFile.write(location.getLocationID() + "," + location.getDescription() + "\n");
+            }
+        } catch (IOException ioException) {
+            System.out.println("in catch block");
+            ioException.printStackTrace();
+        } finally {
+            try {
+                if (locationsFile != null) {
+                    System.out.println("Attempting to close locationsFile");
+                    locationsFile.close();
+                }
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+        }
+    }
 
     static {
         Map<String, Integer> tempExit = new HashMap<String, Integer>();

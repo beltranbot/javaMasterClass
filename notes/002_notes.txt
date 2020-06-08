@@ -1483,3 +1483,25 @@ try {
     System.out.println(exception.toString());
     System.out.println("Unable to perform division, autopilot shitting down");
 }
+
+-- write to a file
+public static void main (String[] args) {
+    FileWriter locationsFile = null;
+    try {
+        locationsFile = new FileWriter("location.txt");
+        for (Location location : locations.values()) {
+            locationsFile.write(location.getLocationID() + "," + location.getDescription() + "\n");
+        }
+    } catch (IOException ioException) {
+        System.out.println("in catch block");
+        ioException.printStackTrace();
+    } finally {
+        try {
+            if (locationsFile != null) {
+                locationsFile.close();
+            }
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+}
