@@ -1505,3 +1505,10 @@ public static void main (String[] args) {
         }
     }
 }
+
+-- try with resources
+try (FileWriter locationsFile = new FileWriter("locations.txt")) {
+    for (Location location : locations.values()) {
+        locationsFile.write(location.getLocationID() + "," + location.getDescription() + "\n");
+    }
+}
