@@ -15,8 +15,7 @@ public class Main {
         // attempt to move in an invalid direction should print a message and remain in the same place.
         //
         // Single letter commands (N, W, S, E, Q) should still be available.
-
-	    Scanner scanner = new Scanner(System.in);
+        Scanner scanner = new Scanner(System.in);
 
         Map<String, String> vocabulary = new HashMap<String, String>();
         vocabulary.put("QUIT", "Q");

@@ -1,5 +1,6 @@
 package com.beltranbot;
 
+import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -37,6 +38,36 @@ public class Locations implements Map<Integer, Location> {
                 System.out.println("imported location: " + location + ": " + description);
                 Map<String, Integer> tempExit = new HashMap<>();
                 locations.put(location, new Location(location, description, tempExit));
+            }
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        } finally {
+            if (scanner != null) {
+                scanner.close();
+            }
+        }
+
+        // now read the exits
+
+        try {
+            scanner = new Scanner(new BufferedReader(new FileReader("directions.txt")));
+            scanner.useDelimiter(",");
+            while (scanner.hasNextLine()) {
+
+                String input = scanner.nextLine();
+                String[] data = input.split(",");
+                int loc = Integer.parseInt(data[0]);
+                String direction = data[1];
+                int destination = Integer.parseInt(data[2]);
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append(loc);
+                stringBuilder.append(": ");
+                stringBuilder.append(direction);
+                stringBuilder.append(": ");
+                stringBuilder.append(destination);
+                System.out.println(stringBuilder);
+                Location location = locations.get(loc);
+                location.addExit(direction, destination);
             }
         } catch (IOException ioException) {
             ioException.printStackTrace();
