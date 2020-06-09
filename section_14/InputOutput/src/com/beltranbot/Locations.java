@@ -1,38 +1,37 @@
 package com.beltranbot;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.*;
 
 /**
  * Created by timbuchalka on 2/04/2016.
  */
 public class Locations implements Map<Integer, Location> {
-    private static Map<Integer, Location> locations = new HashMap<Integer, Location>();
+    private static Map<Integer, Location> locations = new LinkedHashMap<>();
 
     public static void main(String[] args) throws IOException {
         try (
-                FileWriter locationsFile = new FileWriter("locations.txt");
-                FileWriter dirFile = new FileWriter("directions.txt");
+                BufferedWriter locationsFile = new BufferedWriter(new FileWriter("locations.txt"));
+                BufferedWriter dirFile = new BufferedWriter(new FileWriter("directions.txt"));
         ) {
             for (Location location : locations.values()) {
                 locationsFile.write(location.getLocationID() + "," + location.getDescription() + "\n");
                 for (String direction : location.getExits().keySet()) {
-                    dirFile.write(location.getLocationID() + "," + direction + "," + location.getExits().get(direction) + "\n");
+                    if (!direction.equalsIgnoreCase("Q")) {
+                        dirFile.write(location.getLocationID() + "," + direction + "," + location.getExits().get(direction) + "\n");
+                    }
                 }
             }
         }
     }
 
     static {
-        try (Scanner scanner = new Scanner(new FileReader("locations_big.txt"))) {
-            scanner.useDelimiter(",");
-            while (scanner.hasNext()) {
-                int location = scanner.nextInt();
-                scanner.skip(scanner.delimiter());
-                String description = scanner.nextLine();
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("locations_big.txt"))) {
+            String input;
+            while ((input = bufferedReader.readLine()) != null) {
+                String[] data = input.split(",");
+                int location = Integer.parseInt(data[0]);
+                String description = data[1];
                 System.out.println("imported location: " + location + ": " + description);
                 Map<String, Integer> tempExit = new HashMap<>();
                 locations.put(location, new Location(location, description, tempExit));

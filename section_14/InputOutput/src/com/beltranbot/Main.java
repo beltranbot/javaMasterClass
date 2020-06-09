@@ -15,6 +15,26 @@ public class Main {
         // attempt to move in an invalid direction should print a message and remain in the same place.
         //
         // Single letter commands (N, W, S, E, Q) should still be available.
+
+        /**
+        * challenge 2
+         * part 1:
+         * modify the program so tha it uses a bufferedReader to read in the locations data.
+         * Run the program to test it before moving on to part 2.
+         *
+         * part 2:
+         * Modify the main method of the Locations class so that it uses a
+         * BufferedWriter to write the data.
+         *
+         * Open the locations.txt and directions.txt files to check that the data has been written successfully.
+         *
+         * you will then need to make another change to the program to allow
+         * for the 0 (Quit) exits before using the newly created files
+         *
+         * hint: you may wan t to change the three instances of HashMap to
+         * LinkedHashMap in the Location class and one instance in the
+         * Locations class so that you can compare the files more easily
+        * */
         Scanner scanner = new Scanner(System.in);
 
         Map<String, String> vocabulary = new HashMap<String, String>();
