@@ -1506,9 +1506,43 @@ public static void main (String[] args) {
     }
 }
 
--- try with resources
+-- try with resources, writing files
 try (FileWriter locationsFile = new FileWriter("locations.txt")) {
     for (Location location : locations.values()) {
         locationsFile.write(location.getLocationID() + "," + location.getDescription() + "\n");
+    }
+}
+
+-- writing to multiple files with try with resources
+try (
+        FileWriter locationsFile = new FileWriter("locations.txt");
+        FileWriter dirFile = new FileWriter("directions.txt");
+) {
+    for (Location location : locations.values()) {
+        locationsFile.write(location.getLocationID() + "," + location.getDescription() + "\n");
+        for (String direction : location.getExits().keySet()) {
+            dirFile.write(location.getLocationID() + "," + direction + "," + location.getExits().get(direction) + "\n");
+        }
+    }
+}
+
+-- reading from a file
+Scanner scanner = null;
+try {
+    scanner = new Scanner(new FileReader("locations.txt"));
+    scanner.useDelimiter(",");
+    while (scanner.hasNext()) {
+        int location = scanner.nextInt();
+        scanner.skip(scanner.delimiter());
+        String description = scanner.nextLine();
+        System.out.println("imported location: " + location + ": " + description);
+        Map<String, Integer> tempExit = new HashMap<>();
+        locations.put(location, new Location(location, description, tempExit));
+    }
+} catch (IOException ioException) {
+    ioException.printStackTrace();
+} finally {
+    if (scanner != null) {
+        scanner.close();
     }
 }
