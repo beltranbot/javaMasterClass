@@ -1575,3 +1575,43 @@ try {
         scanner.close();
     }
 }
+
+-- reading files with try with resources
+static {
+    try (Scanner scanner = new Scanner(new FileReader("locations_big.txt"))) {
+        scanner.useDelimiter(",");
+        while (scanner.hasNext()) {
+            int location = scanner.nextInt();
+            scanner.skip(scanner.delimiter());
+            String description = scanner.nextLine();
+            System.out.println("imported location: " + location + ": " + description);
+            Map<String, Integer> tempExit = new HashMap<>();
+            locations.put(location, new Location(location, description, tempExit));
+        }
+    } catch (IOException ioException) {
+        ioException.printStackTrace();
+    }
+
+    // now read the exits
+
+    try (BufferedReader bufferedReader = new BufferedReader(new FileReader("directions_big.txt"))) {
+        String input;
+        while ((input = bufferedReader.readLine()) != null) {
+            String[] data = input.split(",");
+            int loc = Integer.parseInt(data[0]);
+            String direction = data[1];
+            int destination = Integer.parseInt(data[2]);
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append(loc);
+            stringBuilder.append(": ");
+            stringBuilder.append(direction);
+            stringBuilder.append(": ");
+            stringBuilder.append(destination);
+            System.out.println(stringBuilder);
+            Location location = locations.get(loc);
+            location.addExit(direction, destination);
+        }
+    } catch (IOException ioException) {
+        ioException.printStackTrace();
+    }
+}
