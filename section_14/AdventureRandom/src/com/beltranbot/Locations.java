@@ -9,39 +9,77 @@ public class Locations implements Map<Integer, Location> {
     private static RandomAccessFile randomAccessFile;
 
     public static void main(String[] args) throws IOException {
-        try (RandomAccessFile randomAccessFile = new RandomAccessFile("locations_rand.dat", "rwd")) {
-            randomAccessFile.writeInt(locations.size());
-            int indexSize = locations.size() * 3 * Integer.BYTES;
-            int locationStart = (int) (indexSize + randomAccessFile.getFilePointer() + Integer.BYTES);
-            randomAccessFile.writeInt(locationStart);
-            long indexStart = randomAccessFile.getFilePointer();
-            int startPointer = locationStart;
-            randomAccessFile.seek(startPointer);
-            for (Location location : locations.values()) {
-                randomAccessFile.writeInt(location.getLocationID());
-                randomAccessFile.writeUTF(location.getDescription());
-                StringBuilder stringBuilder = new StringBuilder();
+//        writeLocationsToRandomAccessFile();
+    }
 
+    static {
+        try {
+            loadLocationsFromRandomAccessFile();
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+    }
+
+    /**
+    * this function might take a while to complete, to ensure the rest of the
+     * application works properly, wait until is done running.
+    * */
+    private static void writeLocationsToRandomAccessFile() throws IOException {
+        try (RandomAccessFile rao = new RandomAccessFile("locations_rand.dat", "rwd")) {
+            rao.writeInt(locations.size());
+            int indexSize = locations.size() * 3 * Integer.BYTES;
+            int locationStart = (int) (indexSize + rao.getFilePointer() + Integer.BYTES);
+            rao.writeInt(locationStart);
+
+            long indexStart = rao.getFilePointer();
+
+            int startPointer = locationStart;
+            rao.seek(startPointer);
+
+            for (Location location : locations.values()) {
+                System.out.println("inside for location id: " + location.getLocationID());
+                rao.writeInt(location.getLocationID());
+                rao.writeUTF(location.getDescription());
+                StringBuilder builder = new StringBuilder();
                 for (String direction : location.getExits().keySet()) {
                     if (!direction.equalsIgnoreCase("Q")) {
-                        stringBuilder.append(direction);
-                        stringBuilder.append(",");
-                        stringBuilder.append(location.getExits().get(direction));
-                        stringBuilder.append(",");
+                        builder.append(direction);
+                        builder.append(",");
+                        builder.append(location.getExits().get(direction));
+                        builder.append(",");
                     }
                 }
+                rao.writeUTF(builder.toString());
 
-                randomAccessFile.writeUTF(stringBuilder.toString());
-                IndexRecord indexRecord = new IndexRecord(startPointer, (int) randomAccessFile.getFilePointer() - startPointer);
-                index.put(location.getLocationID(), indexRecord);
-                startPointer = (int) randomAccessFile.getFilePointer();
+                IndexRecord record = new IndexRecord(startPointer, (int) (rao.getFilePointer() - startPointer));
+                index.put(location.getLocationID(), record);
+
+                startPointer = (int) rao.getFilePointer();
             }
 
-            randomAccessFile.seek(indexStart);
-            for (Integer locationId : index.keySet()) {
-                randomAccessFile.writeInt(locationId);
-                randomAccessFile.writeInt(index.get(locationId).getStartByte());
-                randomAccessFile.writeInt(index.get(locationId).getLength());
+            rao.seek(indexStart);
+            for (Integer locationID : index.keySet()) {
+                rao.writeInt(locationID);
+                rao.writeInt(index.get(locationID).getStartByte());
+                rao.writeInt(index.get(locationID).getLength());
+            }
+            System.out.println("For finished");
+        }
+        System.out.println("Writing finished");
+    }
+
+    private static void writeLocationsToFile() throws IOException {
+        try (
+                BufferedWriter locationsFile = new BufferedWriter(new FileWriter("locations.txt"));
+                BufferedWriter dirFile = new BufferedWriter(new FileWriter("directions.txt"));
+        ) {
+            for (Location location : locations.values()) {
+                locationsFile.write(location.getLocationID() + "," + location.getDescription() + "\n");
+                for (String direction : location.getExits().keySet()) {
+                    if (!direction.equalsIgnoreCase("Q")) {
+                        dirFile.write(location.getLocationID() + "," + direction + "," + location.getExits().get(direction) + "\n");
+                    }
+                }
             }
         }
     }
@@ -51,12 +89,46 @@ public class Locations implements Map<Integer, Location> {
     // 3. The next section of the file will contain the index (the index is 1692 bytes long. It will start at byte 8 and end at byte 1692)
     // 4. The final section of the file will contain the location records (the data). It will start at byte 1700.
 
-    static {
+    public static void loadLocationsFromFile() throws IOException {
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("locations_big.txt"))) {
+            String input;
+            while ((input = bufferedReader.readLine()) != null) {
+                String[] data = input.split(",");
+                int location = Integer.parseInt(data[0]);
+                String description = data[1];
+                System.out.println("imported location: " + location + ": " + description);
+                Map<String, Integer> tempExit = new HashMap<>();
+                locations.put(location, new Location(location, description, tempExit));
+            }
+        }
 
+        // now read the exits
+
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader("directions_big.txt"))) {
+            String input;
+            while ((input = bufferedReader.readLine()) != null) {
+                String[] data = input.split(",");
+                int loc = Integer.parseInt(data[0]);
+                String direction = data[1];
+                int destination = Integer.parseInt(data[2]);
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append(loc);
+                stringBuilder.append(": ");
+                stringBuilder.append(direction);
+                stringBuilder.append(": ");
+                stringBuilder.append(destination);
+                System.out.println(stringBuilder);
+                Location location = locations.get(loc);
+                location.addExit(direction, destination);
+            }
+        }
+    }
+
+    private static void loadLocationsFromRandomAccessFile() throws IOException {
         try {
             randomAccessFile = new RandomAccessFile("locations_rand.dat", "rwd");
             int numberOfLocations = randomAccessFile.readInt();
-            long locationStartPoint = randomAccessFile.read();
+            long locationStartPoint = randomAccessFile.readInt();
 
             while (randomAccessFile.getFilePointer() < locationStartPoint) {
                 int locationId = randomAccessFile.readInt();
@@ -69,21 +141,35 @@ public class Locations implements Map<Integer, Location> {
         } catch (IOException ioException) {
             System.out.println("IOException in static initializer: " + ioException.getMessage());
         }
+    }
 
-//        try (ObjectInputStream locFile = new ObjectInputStream(new BufferedInputStream(new FileInputStream("locations.dat")))) {
-//            while(true) {
-//                try {
-//                    Location location = (Location) locFile.readObject();
-//                    System.out.println("Read location" + location.getLocationID() + " : " + location.getDescription());
-//                    System.out.println("Found " + location.getExits().size() + " exits");
-//                    locations.put(location.getLocationID(), location);
-//                } catch (EOFException eofException) {
-//                    break;
-//                }
-//            }
-//        } catch (IOException | ClassNotFoundException exception) {
-//            exception.printStackTrace();
-//        }
+    public Location getLocation(int locationId) throws IOException {
+        IndexRecord indexRecord = index.get(locationId);
+        randomAccessFile.seek(indexRecord.getStartByte());
+        int id = randomAccessFile.readInt();
+        String description = randomAccessFile.readUTF();
+        String exits = randomAccessFile.readUTF();
+        String[] exitPart = exits.split(",");
+        Location location = new Location(locationId, description, null);
+        if (locationId != 0) {
+            System.out.println("exitPart.length " + exitPart.length);
+            printArray(exitPart);
+            for (int i = 0; i < exitPart.length; i++) {
+                System.out.println("exitPart = " + exitPart[i]);
+                System.out.println("exitPart[+1] = " + exitPart[i + 1]);
+                String direction = exitPart[i];
+                int destination = Integer.parseInt(exitPart[++i]);
+                location.addExit(direction, destination);
+            }
+        }
+
+        return location;
+    }
+
+    private void printArray(Object[] arr) {
+        for(Object object : arr) {
+            System.out.println(object);
+        }
     }
 
     @Override
@@ -144,5 +230,9 @@ public class Locations implements Map<Integer, Location> {
     @Override
     public Set<Entry<Integer, Location>> entrySet() {
         return locations.entrySet();
+    }
+
+    public void close() throws IOException {
+        randomAccessFile.close();
     }
 }
