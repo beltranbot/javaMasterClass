@@ -3,6 +3,7 @@ package com.beltranbot;
 import jdk.dynalink.linker.support.DefaultInternalObjectFilter;
 
 import java.io.*;
+import java.nio.Buffer;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,18 +16,44 @@ public class Locations implements Map<Integer, Location> {
     private static final String COMMA_DELIMITER = ",";
 
     public static void main(String[] args) throws IOException {
-        writeToFileUsingNIO();
+        writeObjectToFileUsingNIO();
     }
 
     static {
-        try {
-            loadLocationsUsingNIO();
+        loadLocationsObjectsUsingNIO();
+    }
+
+    private static void loadLocationsObjectsUsingNIO() {
+        Path locationsPath = FileSystems.getDefault().getPath(LOCATIONS_FILE);
+        try (ObjectInputStream locFile = new ObjectInputStream(new BufferedInputStream(Files.newInputStream(locationsPath)))) {
+            boolean eof = false;
+            while (!eof) {
+                try {
+                    Location location = (Location) locFile.readObject();
+                    locations.put(location.getLocationID(), location);
+                } catch (EOFException eofException) {
+                    eof = true;
+                }
+            }
+        } catch (IOException | ClassNotFoundException exception) {
+            exception.printStackTrace();
+        }
+    }
+
+    private static void writeObjectToFileUsingNIO() {
+        Path locationsPath = FileSystems.getDefault().getPath(LOCATIONS_FILE);
+        Path directionsPath = FileSystems.getDefault().getPath(DIRECTIONS_FILE);
+
+        try (ObjectOutputStream locFile = new ObjectOutputStream(new BufferedOutputStream(Files.newOutputStream(locationsPath)))) {
+            for (Location location : locations.values()) {
+                locFile.writeObject(location);
+            }
         } catch (IOException ioException) {
             ioException.printStackTrace();
         }
     }
 
-    private static void writeToFileUsingNIO() throws IOException {
+    private static void writeToFileUsingNIO() {
         Path locationsPath = FileSystems.getDefault().getPath(LOCATIONS_FILE);
         Path directionsPath = FileSystems.getDefault().getPath(DIRECTIONS_FILE);
         try (
@@ -50,6 +77,8 @@ public class Locations implements Map<Integer, Location> {
                     }
                 }
             }
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
         }
     }
 
@@ -92,7 +121,7 @@ public class Locations implements Map<Integer, Location> {
         }
     }
 
-    private static void loadLocationsUsingNIO() throws IOException {
+    private static void loadLocationsUsingNIO() {
         Path locationsPath = FileSystems.getDefault().getPath(LOCATIONS_FILE);
         Path directionsPath = FileSystems.getDefault().getPath(DIRECTIONS_FILE);
 
@@ -108,6 +137,24 @@ public class Locations implements Map<Integer, Location> {
                         new Location(loc, description, null)
                 );
             }
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+
+        try (BufferedReader dirFIle = Files.newBufferedReader(directionsPath)) {
+            String input;
+
+            while ((input = dirFIle.readLine()) != null) {
+                String[] data = input.split(",");
+                int loc = Integer.parseInt(data[0]);
+                String direction = data[1];
+                int destination = Integer.parseInt(data[2]);
+                System.out.println(loc + ": " + direction + ": " + destination);
+                Location location = locations.get(loc);
+                location.addExit(direction, destination);
+            }
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
         }
     }
 
