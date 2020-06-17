@@ -17,10 +17,33 @@ public class Main {
     private final static String FILENAME_DAT = "data.dat";
 
     public static void main(String[] args) {
+        try (
+                FileOutputStream binFile = new FileOutputStream(FILENAME_DAT);
+                FileChannel binChannel = binFile.getChannel();
+        ) {
+            ByteBuffer buffer = ByteBuffer.allocate(100);
+            byte[] outputBytes = "Hello World!".getBytes();
+            buffer.put(outputBytes);
+            buffer.putInt(245);
+            buffer.putInt(-98765);
+            byte[] outputByte2 = "Nice to meet you".getBytes();
+            buffer.put(outputByte2);
+            buffer.putInt(1000);
+            buffer.flip(); // flip between writing to the buffer to reading to the buffer
+            binChannel.write(buffer);
+
+        } catch (IOException exception) {
+
+        }
+    }
+
+    private static void writingOneVariableAtTheTimeNIO() {
         try (FileOutputStream binFile = new FileOutputStream(FILENAME_DAT)) {
             FileChannel binChannel = binFile.getChannel();
             byte[] outputBytes = "Hello World!".getBytes();
-            ByteBuffer buffer = ByteBuffer.wrap(outputBytes);
+            ByteBuffer buffer = ByteBuffer.allocate(outputBytes.length);
+            buffer.put(outputBytes);
+            buffer.flip();
             int numBytes = binChannel.write(buffer);
             System.out.println("numBytes written was: " + numBytes);
 
@@ -45,6 +68,7 @@ public class Main {
             long numBytesRead = channel.read(buffer);
             if (buffer.hasArray()) {
                 System.out.println("byte buffer = " + new String(buffer.array()));
+//                System.out.println("byte buffer = " + new String(outputBytes));
             }
             // Absolute read
             intBuffer.flip();
@@ -52,7 +76,10 @@ public class Main {
             System.out.println(intBuffer.getInt(0));
             intBuffer.flip();
             numBytesRead = channel.read(intBuffer);
+            intBuffer.flip();
             System.out.println(intBuffer.getInt(0));
+            System.out.println(intBuffer.getInt());
+
             // Relative read
             //            intBuffer.flip();
             //            numBytesRead = channel.read(intBuffer);
