@@ -1654,3 +1654,77 @@ Having said all that about java.nio, you can use java.nio methods to create a ja
 Make a copy of the adventure game project that we last used to read and write the data as an object
 stream e.g. Before we looked into Random access. You can grab a zip file from the resources section
 of this video.
+
+
+-- Filesystem
+
+So far, you've learned how to create, read, and write files and datasources using java.nio.
+Sometimes, you don't want to read from a file or write to a file. You want to copy files,
+delete files, move them, etc. In other words, you want to work with the file system. Java.nio
+has you covered. In fact, it has a whole package dedicated to working with the file system,
+called java.nio.file.
+
+We'll start by taking a look at the Path interface, which is what you'll use to identify a file
+on the file sytem. You've already used Paths. You created them when you wanted to use
+java.io classes to read and write files, but you called a method such as
+Files.newBufferedWriter() so that the BufferedWriter would be backed by a java.nio buffer
+and channel.
+
+But what is a path? Well, you're familiar wit hthe concept of a file path because you use
+them all the time. If you open the File Explorer on your system, you'll see a bunch of root
+folders (usually hard drives, peripheral drives like DVD or Blu-ray drivers, external drives, thumb drives, etc.)
+Each of those top-level drives is a root node in a path. For exmaple, the
+directory C:\ is the root  node for the C drive.
+
+Each folder, which is also referred to as a directory, is also a node in a path. And then, of
+course, there's the file itself. If you have downloaded a file and placed it in the
+C:\downloads directory, then the file path has three nodes: One for C:\, one for the
+downloads directory, and one for the file.
+
+This path is unique. Youcan't have two files with the same name in the same directory,
+because each file is identified by its path. For the downloads example, if you named the 
+file you downloaded data.txt, then the path would be C:\downloads\file.txt. You
+wouldn't be able to place a second file called file.txt into the same directory.
+
+The character used to separate the directory anmes in a path is called the delimiter, and it
+can differ between operating systems. For example, for Windows, the delimiter is the
+backslash ('\'). On Unix, the delimiter is the forward slash('/').
+
+Everything we discuss about paths applies to files and directories. To keep things
+simple, we won't walways refer to both. But you can create a path for a file or directory.
+Sometimes it won't make sense to use a path to a directory, for example, when you want
+to create a file. Other times it will only make sense to use a path to a directory. It will
+depend on what you want todo. Just keep in mind that pahts can refer to either.
+
+File paths can be absolute or relative. The path C:\downloads\file.txt is and absolute path,
+because it starts at a root node. The path photos\vacation\mountain.jpg is a relative path
+because it doesn't specify a root node, it doesn't contain enough information to identify
+the file. It would have to be combine with another path that does contain a root node.
+
+When using relative paths in applications, ther's usually the concept of a current or
+working directory that you can combine with relative paths. For exapmle, when you were 
+running applications that used Path, you didn't specify the entiry Path. You did
+something like the following:
+
+-- relative path
+Path dataPath = FileSytems.getDefault().getPath("data.txt");
+
+The string "data.txt" doesn't give enough information about where the file is located. But
+you'll notice that you're calling FileSystems.getDefault() first, and then getPath(). What's
+happening is that the getDefault() call returns a FileSystem object with a working directory
+set to the current user directory.º
+
+When running an application from within IDEA, the current user directory is the IDEA
+project directory, and so that's the working directory for the FileSystem object. The
+working directory is then combined with the Path you passed to the getPath() call, and
+that's why the files are created in the IDEA project's directory.
+
+Instead, you could have done something like the following:
+-- use absolute path
+Path dataPath = Paths.get("C:\\MyIdeaProject\\Projects1\\data.txt;
+
+Notice that you're using the Paths class (which has an 's' at the end) when you call the get()
+method. There are only two methods in the class, and both of them return a Path based
+on a string.
+
+Let's jump into and IDEA project now, so you can play around with apths a bit.
