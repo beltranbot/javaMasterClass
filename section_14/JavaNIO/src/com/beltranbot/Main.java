@@ -3,8 +3,10 @@ package com.beltranbot;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
+import java.nio.channels.Pipe;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,6 +19,63 @@ public class Main {
     private final static String FILENAME_DAT = "data.dat";
 
     public static void main(String[] args) {
+
+        try {
+            Pipe pipe = Pipe.open();
+            Runnable writer = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Pipe.SinkChannel sinkChannel = pipe.sink();
+                        ByteBuffer buffer = ByteBuffer.allocate(56);
+
+                        for (int i = 0; i < 10; i++) {
+                            String currentTime = "The time is: " + System.currentTimeMillis();
+                            buffer.put(currentTime.getBytes());
+                            buffer.flip();
+
+                            while (buffer.hasRemaining()) {
+                                sinkChannel.write(buffer);
+                            }
+                            buffer.flip();
+                            Thread.sleep(100);
+                        }
+                    } catch (IOException | InterruptedException exception) {
+                        exception.printStackTrace();
+                    }
+                }
+            };
+
+            Runnable reader = new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Pipe.SourceChannel sourceChannel = pipe.source();
+                        ByteBuffer buffer = ByteBuffer.allocate(56);
+                        for (int i = 0; i < 10; i++) {
+                            int bytesRead = sourceChannel.read(buffer);
+                            byte[] timeString = new byte[bytesRead];
+                            buffer.flip();
+                            buffer.get(timeString);
+                            System.out.println("Reader thread: "  + new String(timeString));
+                            buffer.flip();
+                            Thread.sleep(100);
+                        }
+                    } catch (Exception exception) {
+                        exception.printStackTrace();
+                    }
+                }
+            };
+
+            new Thread(writer).start();
+            new Thread(reader).start();
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+
+    }
+
+    private static void helperFunction1() {
         try (
                 FileOutputStream binFile = new FileOutputStream(FILENAME_DAT);
                 FileChannel binChannel = binFile.getChannel();
@@ -84,36 +143,47 @@ public class Main {
             readBuffer.flip();
             System.out.println("int1 = " + readBuffer.getInt());
 
-            byte[] outputString = "Hello, World!".getBytes();
-            long str1Pos = 0;
-            long newInt1Pos = outputString.length;
-            long newInt2Pos = newInt1Pos + Integer.BYTES;
-            byte[] outputString2 = "Nice to meet you".getBytes();
-            long str2Pos = newInt2Pos + Integer.BYTES;
-            long newInt3Pos = str2Pos + outputString2.length;
+            RandomAccessFile copyFile = new RandomAccessFile("datacopy.dat", "rw");
+            FileChannel copyChannel = copyFile.getChannel();
+            channel.position(0);
+//            long numTransferred = copyChannel.transferFrom(channel, 0, channel.size());
+            long numTransferred = channel.transferTo(0, channel.size(), copyChannel);
+            System.out.println("Num transferred = " + numTransferred);
 
-            ByteBuffer intBuffer = ByteBuffer.allocate(Integer.BYTES);
-            intBuffer.putInt(245);
-            intBuffer.flip();
-            binChannel.position(newInt1Pos);
-            binChannel.write(intBuffer);
+            channel.close();
+            randomAccessFile.close();
+            copyChannel.close();
 
-            intBuffer.flip();
-            intBuffer.putInt(-98765);
-            intBuffer.flip();
-            binChannel.position(newInt2Pos);
-            binChannel.write(intBuffer);
-
-            intBuffer.flip();
-            intBuffer.putInt(1000);
-            intBuffer.flip();
-            binChannel.position(newInt3Pos);
-            binChannel.write(intBuffer);
-
-            binChannel.position(str1Pos);
-            binChannel.write(ByteBuffer.wrap(outputString));
-            binChannel.position(str2Pos);
-            binChannel.write(ByteBuffer.wrap(outputString2));
+//            byte[] outputString = "Hello, World!".getBytes();
+//            long str1Pos = 0;
+//            long newInt1Pos = outputString.length;
+//            long newInt2Pos = newInt1Pos + Integer.BYTES;
+//            byte[] outputString2 = "Nice to meet you".getBytes();
+//            long str2Pos = newInt2Pos + Integer.BYTES;
+//            long newInt3Pos = str2Pos + outputString2.length;
+//
+//            ByteBuffer intBuffer = ByteBuffer.allocate(Integer.BYTES);
+//            intBuffer.putInt(245);
+//            intBuffer.flip();
+//            binChannel.position(newInt1Pos);
+//            binChannel.write(intBuffer);
+//
+//            intBuffer.flip();
+//            intBuffer.putInt(-98765);
+//            intBuffer.flip();
+//            binChannel.position(newInt2Pos);
+//            binChannel.write(intBuffer);
+//
+//            intBuffer.flip();
+//            intBuffer.putInt(1000);
+//            intBuffer.flip();
+//            binChannel.position(newInt3Pos);
+//            binChannel.write(intBuffer);
+//
+//            binChannel.position(str1Pos);
+//            binChannel.write(ByteBuffer.wrap(outputString));
+//            binChannel.position(str2Pos);
+//            binChannel.write(ByteBuffer.wrap(outputString2));
 
 //            ByteBuffer readBuffer = ByteBuffer.allocate(100);
 //            channel.read(readBuffer);
@@ -193,7 +263,7 @@ public class Main {
         }
     }
 
-    private static void readingBinaryFileUsingJavaIO(byte[] outputBytes) throws IOException{
+    private static void readingBinaryFileUsingJavaIO(byte[] outputBytes) throws IOException {
         RandomAccessFile randomAccessFile = new RandomAccessFile(FILENAME_DAT, "rwd");
         byte[] b = new byte[outputBytes.length];
         randomAccessFile.read(b);
