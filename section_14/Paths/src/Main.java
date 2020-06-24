@@ -14,11 +14,21 @@ public class Main {
         Path path = FileSystems.getDefault().getPath(WORKING_DIRECTORY_FILE);
         printFile(path);
 
-        Path filePath = FileSystems.getDefault().getPath("files", SUBDIRECTORY_FILE);
+//        Path filePath = FileSystems.getDefault().getPath("files", SUBDIRECTORY_FILE);
+        Path filePath = FileSystems.getDefault().getPath(".","files", SUBDIRECTORY_FILE);
         printFile(filePath);
 
-        filePath = Paths.get("/home/beltran/IdeaProjects/JavaMasterClass/section_14/" + OUTTHERE_FILE);
+//        filePath = Paths.get("/home/beltran/IdeaProjects/JavaMasterClass/section_14/" + OUTTHERE_FILE);
+        filePath = Paths.get("/home/beltran/IdeaProjects", "JavaMasterClass/section_14/", OUTTHERE_FILE);
         printFile(filePath);
+
+        filePath = Paths.get(".");
+        System.out.println(filePath.toAbsolutePath());
+
+        Path path2 = FileSystems.getDefault().getPath(".", "files", "..", "files", SUBDIRECTORY_FILE);
+        System.out.println(path2.normalize().toAbsolutePath());
+        printFile(path2.normalize());
+
     }
 
     private static void printFile(Path path) {
