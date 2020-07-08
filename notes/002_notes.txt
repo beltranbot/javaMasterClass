@@ -1920,3 +1920,10 @@ visitFileFailed() - this method is called when a file can't be accessed. The
 exception that's thrown is passed to the method. You can then decide what to do
 with it (throw it, print it, or anything else that makes sense for the application and
 operation being performed). Can be called for files and directories.
+
+-- copy directory with subdirectories
+sourcePath = "FileTree\Dir2\Dir3\File1.txt";
+sourceRoot = "FileTree\Dir2";
+targetRoot = "FileTree\Dir4\Dir2Copy";
+relativizedPath = sourceRoot.relativize(sourcePath); // which = "Dir3\File1.txt"
+resolvedPathForCopy = targetRoot.resolve(relativizedPath); // which = "FileTree\Dir4\Dir2Copy\Dir3\file1.txt"
