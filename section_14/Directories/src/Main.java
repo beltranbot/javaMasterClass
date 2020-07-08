@@ -49,6 +49,15 @@ public class Main {
             System.out.println(path);
         }
 
+        System.out.println("--- walking Tree for Dir2 ----");
+        Path dir2Path = FileSystems.getDefault().getPath("FileTree" + File.separator + "Dir2");
+        try {
+            Files.walkFileTree(dir2Path, new PrintNames());
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
+
+
 
     }
 }
