@@ -1864,3 +1864,30 @@ try (DirectoryStream<Path> contents = Files.newDirectoryStream(directory, filter
 } catch(IOException | DirectoryIteratorException e) {
     System.out.println(e.getMessage());
 }
+
+// get system directory separator
+String separator = File.separator;
+System.out.println(separator);
+separator = FileSystems.getDefault().getSeparator();
+System.out.println(separator);
+
+// create temporary file
+try {
+    Path tempFile = Files.createTempFile("myapp", "appext");
+    System.out.println("temporary file path = " + tempFile.toAbsolutePath());
+} catch (IOException e) {
+    System.out.println(e.getMessage());
+}
+
+// get file stores
+Iterable<FileStore> stores = FileSystems.getDefault().getFileStores();
+for (FileStore store : stores) {
+    System.out.println("volume name / drive letter = " + store);
+    System.out.println("file store =" + store.name());
+}
+
+// get root directories
+Iterable<Path> rootPaths = FileSystems.getDefault().getRootDirectories();
+for (Path path : rootPaths) {
+    System.out.println(path);
+}
