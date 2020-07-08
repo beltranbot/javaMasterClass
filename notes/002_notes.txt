@@ -1753,3 +1753,114 @@ problems?
     - Many of the methods don't perform well when working with lots of data. For example,
     if you use the File class to request a list of all the files in a directory, and there are a lot
     of files, the method can hang.
+
+try {
+
+    // create file
+    Path fileToCreate = FileSystems.getDefault().getPath("Examples", "file2.txt");
+    Files.createFile(fileToCreate);
+
+    // create directory
+    Path dirToCreate = FileSystems.getDefault().getPath("Examples", "Dir4");
+    Files.createDirectory(dirToCreate);
+
+    // create directories
+    Path dirToCreate = FileSystems.getDefault().getPath("Examples", "Dir2/Dir3/Dir4/Dir5/Dir6");
+    Files.createDirectories(dirToCreate);
+
+    // file attributes
+    Path filePath = FileSystems.getDefault().getPath("Examples", "Dir1/file1.txt");
+    long size = Files.size(filePath);
+    System.out.println("Size = " + size);
+    System.out.println("Last modified = " + Files.getLastModifiedTime(filePath));
+
+    // BasicFileAttributes
+    BasicFileAttributes attributes = Files.readAttributes(filePath, BasicFileAttributes.class);
+    System.out.println("Size = " + attributes.size());
+    System.out.println("Last modified = " + attributes.lastModifiedTime());
+    System.out.println("Created = " + attributes.creationTime());
+    System.out.println("Is directory = " + attributes.isDirectory());
+    System.out.println("Is regular file = " + attributes.isRegularFile());
+
+    // Delete file
+    Path fileToDelete = FileSystems.getDefault().getPath("Examples", "Dir1", "file1copy.txt");
+    Files.deleteIfExists(fileToDelete);
+
+    // rename file
+    Path fileToMove = FileSystems.getDefault().getPath("Examples", "file1qqqq.txt");
+    Path destination = FileSystems.getDefault().getPath("Examples", "file2.txt");
+    Files.move(fileToMove, destination);
+
+    // move file
+    Path fileToMove = FileSystems.getDefault().getPath("Examples", "file1copy.txt");
+    Path destination = FileSystems.getDefault().getPath("Examples", "Dir1", "file1copy.txt");
+    Files.move(fileToMove, destination);
+
+    // replace existing file
+    Path sourceFile = FileSystems.getDefault().getPath("Examples", "file1.txt");
+    Path copyFile = FileSystems.getDefault().getPath("Examples", "file1copy.txt");
+    Files.copy(sourceFile, copyFile, StandardCopyOption.REPLACE_EXISTING);
+
+    // copy file
+    sourceFile = FileSystems.getDefault().getPath("Examples", "Dir1");
+    copyFile = FileSystems.getDefault().getPath("Examples", "Dir4");
+    Files.copy(sourceFile, copyFile, StandardCopyOption.REPLACE_EXISTING);
+
+} catch(IOException e) {
+    e.printStackTrace();
+    System.out.println(e.getMessage());
+}
+
+// directories
+// glob
+// read existing directory contents
+The * character matches any string (which can contain any number of characters).
+
+*.dat will match any path with the .dat extension
+
+*.{dat,txt} will match any path that has the extension .dat or .txt
+
+? matches exactly one character. For example, the glob ??? would match any path that contains exactly
+three characters
+
+myFile* matches any paths that begin with myFile.
+b?*.txt matches any paths that are at least two characters long and begin with the chracter b (the ?
+forces a second character, and the * mataches 0 or more characters).
+
+// list all contents of a directory
+Path directory = FileSystems.getDefault().getPath("FileTree/Dir2");
+try (DirectoryStream<Path> contents = Files.newDirectoryStream(directory)) {
+    for (Path file : contents) {
+        System.out.println(file.getFileName());
+    }
+} catch(IOException | DirectoryIteratorException e) {
+    System.out.println(e.getMessage());
+}
+
+// using glob to filter
+Path directory = FileSystems.getDefault().getPath("FileTree/Dir2");
+try (DirectoryStream<Path> contents = Files.newDirectoryStream(directory, "*.dat")) {
+    for (Path file : contents) {
+        System.out.println(file.getFileName());
+    }
+} catch(IOException | DirectoryIteratorException e) {
+    System.out.println(e.getMessage());
+}
+
+// list only files
+DirectoryStream.Filter<Path> filter = new DirectoryStream.Filter<Path>() {
+    public boolean accept(Path path) throws IOException {
+        return Files.isRegularFile(path);
+    }
+};
+
+// DirectoryStream.Filter<Path> filter = p -> Files.isRegularFile(p); // with lambda expression
+
+Path directory = FileSystems.getDefault().getPath("FileTree/Dir2");
+try (DirectoryStream<Path> contents = Files.newDirectoryStream(directory, filter)) {
+    for (Path file : contents) {
+        System.out.println(file.getFileName());
+    }
+} catch(IOException | DirectoryIteratorException e) {
+    System.out.println(e.getMessage());
+}
