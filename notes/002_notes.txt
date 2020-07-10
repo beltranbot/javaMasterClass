@@ -492,7 +492,7 @@ application.
 -- instance methods
 Instance methods belong to an instance of a class.
 
-To use an instance method we have to instanctiate the class first usually by using
+To use an instance method we have to instantiate the class first usually by using
 the new keyword.
 
 Instance methods can access instance methods and instance variables directly.
@@ -2049,3 +2049,75 @@ Before we do, we have to understand that when working with threads,
 we're at the mercy of the JVM and the operating system when it  comes
 to when threads are scheduled to run.
 
+// creating threads
+
+1. have a class extending the Thread class
+
+public class AnotherThread extends Thread {
+
+    @Override
+    public void run () {
+        System.out.println("hello from another thread");
+    }
+}
+
+then instantiate the class and call the start() method.
+
+Thread anotherThread = new AnotherThread();
+anotherThread.start();
+
+2. Use an anonymous class of the Thread class
+
+new Thread() {
+    public void run() {
+        System.out.println(ANSI_GREEN + "hello from the anonymous class thrad");
+    }
+}.start();
+
+3. Create a class that implements the Runnable interface
+
+public class MyRunnable implements Runnable {
+
+    @Override
+    public void run() {
+        System.out.println("hello from MyRunnable's Implementation of run");
+    }
+}
+
+then instantiate an object of the Thread class and using your Runnable class as an argument for the constructor
+
+Thread runnableThread = new Thread(new MyRunnable());
+runnableThread.start();
+
+4. use an anonymous class as the parameter for the constructor of the thread.
+
+Thread myRunnableThread = new Thread(new Runnable() {
+    @Override
+    public void run() {
+        System.out.println("hello from the anonymous class's run()");
+    }
+});   
+myRunnableThread.start();
+
+--- give name to thread
+anotherThread.setName("== Another Thread ==");
+anotherThread.start();
+
+-- to use the name, if we use .run instead of .start we get main instead of another thread.
+currentThread().getName();
+
+-- put a thread to sleep
+public class AnotherThread extends Thread {
+    @Override
+    public void run() {
+        System.out.println(ANSI_BLUE + "hello from " + currentThread().getName());
+
+        try {
+            Thread.sleep(3000); // 3 seconds
+        } catch (InterruptedException e) {
+            System.out.println(ANSI_BLUE + "Another thread woke me up");
+        }
+
+        System.out.println(ANSI_BLUE + "Three seconds hava passed and I'm awake");
+    }
+}
