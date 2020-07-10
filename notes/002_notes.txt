@@ -1961,3 +1961,92 @@ File[] dir2Files = dir2File.listFiles();
 for (int i = 0; i < dir2File.listFiles().length; i++) {
     System.out.println("i= " + i + ": " + dir2Files[i].getName());
 }
+
+-- Concurreency in Java
+
+- Introduction to concurrency/threads
+
+We'll start teh section on Java concurrency be defining a few key terms as they
+relate to Java. A process is a unit of execution that has its own memory space.
+Each instance of a Java Virtual Machine (JVM) runs as a process (this isn't true for
+all JVM implementations, but for most  of them). When we run a Java console
+application, we're kicking off a process. When we run a JavaFx application, we're
+kicking off a process.
+
+Many people will use the terms process and application intechangeably, and we
+will, too. If one Java application is running and we run another one, each
+application has its own memory space of heap. The first Java application can't
+access the heap that belongs to the second Java application. The heap ins't 
+shared between them. They each have thier own.
+
+
+A thread is a unit of execution within a process. Each process can have multiple
+threads. In Java, every process (or application) has at least one thread, the main
+thread (for UI application, this is called the JavaFX application thread). In fact,
+just about every Java process also has multiple system threads that handle tasks
+like memory management and I/O. We, the developers, don't explicitly create
+and code those threads. Our code runs on the main thread, or in other threads
+that we explicitly create.
+
+Creating a thread doesn't require as many resources as creating a process.
+Every thread created by a process shares the process's
+memory and files. This can create problems, as we'll see in a later lecture.
+
+In addition to the process's memory, or heap, each thread has what's 
+called a thread stack, which is the memory that only that thread can
+access. We'll look at what's stored in the heap vs what's stored in the
+thread stack in a later lecture.
+
+So, every Java application runs as a single process, and each process can
+have multiple threads. Every process has a heap, and every thread has a thread stack.
+
+Why would we want to use multiple threads in our application? Why not
+just stick with the main thread? There are two main reasons.
+
+First of all, we sometimes want to perform a task that's going to take a
+long time. For example, we might want to query a database, or we might
+want to featch data from somewhere on the internet. We could do this on
+the main thread, but the code within each main thread executes in a
+linear fashion. The main thread won't be able to do anything else
+while it's wainting for the data.
+
+Another way of putting this is that the execution of the main thread will
+be suspended. It has to wait for the data to be returned before it can
+execute the next line of code. To the user, this could appear as if our
+application ahs died or is frozen, especially when we're dealing with a UI
+application.
+
+Instead of tying up the main thread, we can create another thread and
+execute the long-running task on that thread. This would free up the
+main thread, so that it can continue executing. It cant report progress or
+acept user input while the long-running task continues to execute in the
+background.
+
+A second reason we might want to use threads is because an API
+requires us to provide one. Sometimes we have to provide the code that
+will run when a method we've called reaches a certain point in it's
+execution. In this instance, we usually don't create the thread. We pass
+in the code that we want to run on the thread. We'll see an example of this later.
+
+That brings us to concurrency, which refers to an application doing
+more than one thing at a time. Now, that doesn't necessarily mean that
+the application is doing more than one thing at the same time. It means
+that progress can be made on more than one task. Let's say that an
+application wants to download data and draw a shape on the screen.
+
+If it's a concurrent application, it can download a bit of data, then switch
+to drawing part of the shape, then switch back to downloading some
+more data, tehn switch back to drawing more of the shape, etc.
+Concurrency menas that one task doesn't have to complete before another can start.
+Java provides thread-related classes so that we can creawte Java concurrent applications.
+
+
+That's a short explanation of some of the terminology. Don't worry if
+you're having trouble graesping these concepts. Concurrency is
+something that's best learned by example, so let's move on tto creating some threads.
+
+Before we do, we have to understand that when working with threads,
+we're at the mercy of the JVM and the operating system when it  comes
+to when threads are scheduled to run.
+
+º
