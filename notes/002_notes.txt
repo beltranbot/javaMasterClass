@@ -2049,4 +2049,3 @@ Before we do, we have to understand that when working with threads,
 we're at the mercy of the JVM and the operating system when it  comes
 to when threads are scheduled to run.
 
-º
