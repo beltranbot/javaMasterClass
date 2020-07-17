@@ -2116,8 +2116,29 @@ public class AnotherThread extends Thread {
             Thread.sleep(3000); // 3 seconds
         } catch (InterruptedException e) {
             System.out.println(ANSI_BLUE + "Another thread woke me up");
+            return;
         }
 
         System.out.println(ANSI_BLUE + "Three seconds hava passed and I'm awake");
     }
 }
+
+-- you can interrupt a threads execution from another thread
+anotherThread.interrupt();
+remember to set a return statement in the catch section of the code to stop execution.
+
+-- joining threads
+Thread myRunnableThread = new Thread(new MyRunnable() {
+    @Override
+    public void run() {
+        System.out.println(ANSI_RED + "hello from the anonymous class's run()");
+        try {
+            anotherThread.join(2000); // number indicates how many milliseconds should be waited before continuing execution
+            // the following line doesn't executes until anotherThread has finishing running
+            // even if it is by a interruption or until the time set in the parameter runs out.
+            System.out.println(ANSI_RED + "AnotherThread terminated, or timed out, so I'm running again");
+        } catch(InterruptedException e) {
+            System.out.println(ANSI_RED + "I couldn't wait after all, I was interrupted");
+        }
+    }
+});
