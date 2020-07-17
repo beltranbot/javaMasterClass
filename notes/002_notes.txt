@@ -2142,3 +2142,29 @@ Thread myRunnableThread = new Thread(new MyRunnable() {
         }
     }
 });
+
+-- thread synchronization
+- you can only methods and not constructors
+
+public [synchronized] void doCountDown() { // synchronized in the method definition means that the threads locks the heap and stack until the next the method finishes
+// no threads can have access to this method until it finishes running
+    String color;
+
+    switch(Thread.currentThread().getName()) {
+        case "Thread 1":
+            color = ThreadColor.ANSI_CYAN;
+            break;
+        case "Thread 2":
+            color = ThreadColor.ANSI_PURPLE;
+            break;
+        default:
+            color = ThreadColor.ANSI_GREEN;
+    }
+
+    synchronized (this) { // locks the objectil the block finishes executing, no other thread can make use of it
+        for (i = 10; i > 0; i--) {
+            System.out.println(color + Thread.currentThread().getName() + ": i  = " + i);
+        }
+    }
+
+}

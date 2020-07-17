@@ -9,18 +9,19 @@ public class Main {
         t1.setName("Thread 1");
 
         CountDownThread t2 = new CountDownThread(countDown);
-        t1.setName("Thread 2");
+        t2.setName("Thread 2");
 
         t1.start();
         t2.start();
+
     }
 
 }
 
-
 class CountDown {
     private int i;
-    public void doCountDown() {
+
+    public synchronized void doCountDown() {
         String color;
 
         switch(Thread.currentThread().getName()) {
@@ -34,9 +35,12 @@ class CountDown {
                 color = ThreadColor.ANSI_GREEN;
         }
 
-        for (i = 10; i > 0; i--) {
-            System.out.println(color + Thread.currentThread().getName() + ": i  = " + i);
-        }
+//        synchronized (this) { // locks the current thread
+            for (i = 10; i > 0; i--) {
+                System.out.println(color + Thread.currentThread().getName() + ": i  = " + i);
+            }
+//        }
+
     }
 }
 
