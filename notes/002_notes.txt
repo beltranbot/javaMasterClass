@@ -2184,3 +2184,20 @@ if we want multiple threads to be able to safely use the code.
 when we synchronize code, we must only synchronize code that must be synchronized
 in the previous example, only the for loop had to be synchronized.
 synchronizing unnecessary code my slow down or reduce the performance of our application.
+
+when synchronizing code, always keep in mind that threads can be suspended while executing a single line of code,
+a single line of code may call a method that contains hundreds of lines of code or a single line of code
+can contain many operations and a thread can be suspended before or after each operation.
+
+- Atomic operations in Java that happen all at once.
+a thread can't be suspended in the middle of doing them
+- reading or writing reference variables. ex myObj1 = myObj2, is atomic.
+- reading and writing primitive variables, except those of types long and double.
+so the jvm may require 2 operation to read or write long and doubles and the thread can be
+suspended between each operation. ex. a thread can't be suspended in the middle of the executing myInt = 10;
+but it can be suspended in the middle of executing myDouble = 1.234
+- the third scenario is reading or writing all variables declared volatile..
+
+Some collections aren't thread safe, in other words they aren't synchronized.
+For example, arrayList is not thread safe. We have to handle the syncronization ourselves.
+The vector class is synchronized.
