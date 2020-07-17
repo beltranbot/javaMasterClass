@@ -2168,3 +2168,19 @@ public [synchronized] void doCountDown() { // synchronized in the method definit
     }
 
 }
+
+- critical section
+code that is referencing a share resources like a variable
+only one thread at the time should be able to execute a critical section
+
+- thread safe use
+when a class or a method is thread safe what that means is that
+the developer has synchronized all the critical sections within the code
+so we as a developer don't have to worry about the thread interference or race condition.
+So if we are using a method or class that isn't thread safe, then the developer
+hasn't added any synchronization. In that case we will be responsible to adding synchronization
+if we want multiple threads to be able to safely use the code.
+
+when we synchronize code, we must only synchronize code that must be synchronized
+in the previous example, only the for loop had to be synchronized.
+synchronizing unnecessary code my slow down or reduce the performance of our application.
