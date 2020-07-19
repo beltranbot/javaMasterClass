@@ -2214,4 +2214,4 @@ Also, if the lock isn't available we can't time out after we waited for the lock
 we can either get the lock and continue executing or block at that line of code until we get the lock.
 and the forth drawback is that if multiple threads are waiting to get a lock is not first come first served there isn't a set order in which the jvm
 will choose the next thread that gets the lock so the first thread that blocked could be the last thread to get the lock and vice versa.
-So instead of using synchronization we can prevent threat interference using classes that implement the java.util.concurrent locks.lock interface.
+So instead of using synchronization we can prevent threat interference using classes that implement the java.util.concurrentLocks.lock interface.
