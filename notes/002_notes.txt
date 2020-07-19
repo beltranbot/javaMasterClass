@@ -2214,4 +2214,96 @@ Also, if the lock isn't available we can't time out after we waited for the lock
 we can either get the lock and continue executing or block at that line of code until we get the lock.
 and the forth drawback is that if multiple threads are waiting to get a lock is not first come first served there isn't a set order in which the jvm
 will choose the next thread that gets the lock so the first thread that blocked could be the last thread to get the lock and vice versa.
-So instead of using synchronization we can prevent threat interference using classes that implement the java.util.concurrentLocks.lock interface.
+So instead of using synchronization we can prevent threat interference using classes that implement the java.util.concurrent.locks.lock interface.
+
+ReentrantLock bufferLock = new ReentrantLock();
+
+if a thread is already holding a reentrant lock when it reaches the code that requires
+the same lock it can continue executing. Tt doesn't have to obtain the lock again.
+Now that might sound as if it should be a given but in fact not all implementations of the lock interface
+are re-entrant.
+
+class MyProducer implements Runnable {
+
+    private List<String> buffer;
+    private String color;
+    private ReentrantLock bufferLock;
+
+    public MyProducer(List<String> buffer, String color, ReentrantLock bufferLock) {
+        this.buffer = buffer;
+        this.color = color;
+        this.bufferLock = bufferLock;
+    }
+
+    @Override
+    public void run() {
+        Random random = new Random();
+        String[] nums = {"1", "2", "3", "4", "5"};
+
+        for (String num : nums) {
+            try {
+                System.out.println(color + "Adding... " + num);
+                bufferLock.lock();
+                buffer.add(num);
+                bufferLock.unlock();
+                Thread.sleep(random.nextInt(1000));
+            } catch (InterruptedException e) {
+                System.out.println("Producer was interrupted");
+            }
+        }
+
+        System.out.println(color + "Adding EOF and exiting...") ;
+        bufferLock.lock();
+        buffer.add("EOF");
+        bufferLock.unlock();
+    }
+}
+
+that's for the code for the producer class and just want to clarify something
+here that we're using the lock method to acquire the lock
+and the unlock method to release the lock but this is very important. When using
+lock objects we're responsible for releasing the lock, it won't happen automatically.
+it doesn't happen automatically as it would when we use the synchronized block.
+So the intrinsic ,locks we use with synchronized blocks are always released when the thread holding the lock
+exits the synchronized block so this is on drawback to using lock objects in that we have to manage this lock
+process ourselves by  making sure we call the .lock and the .unlock.
+Now when a thread calls the lock method it will either obtain the lock and continue executing
+or it won't be able to get the lock because a thread already has it, so in that case th t hread
+that called lock will be suspended until it can get the lock. If we forget to release the lock, threads
+waiting for the lock will then start blocking forever.
+So in our producers as you saw the code, i've just change there, we get the lock before we add
+a number string, after adding the string, we then release the lock and the same goes for when we get the
+end of file indicator.
+
+class MyConsumer implements Runnable {
+
+    private List<String> buffer;
+    private String color;
+    private ReentrantLock bufferLock;
+
+    public MyConsumer(List<String> buffer, String color, ReentrantLock bufferLock) {
+        this.buffer = buffer;
+        this.color = color;
+        this.bufferLock = bufferLock;
+    }
+
+    @Override
+    public void run() {
+        while (true) {
+            bufferLock.lock();
+            if (buffer.isEmpty()) {
+                bufferLock.unlock();
+                continue;
+            }
+            if (buffer.get(0).equals(EOF)) {
+                System.out.println(color + "Exiting");
+                bufferLock.unlock();
+                break;
+            } else {
+                System.out.println(color + "Removed " + buffer.remove(0));
+            }
+            bufferLock.unlock();
+        }
+    }
+}
+
