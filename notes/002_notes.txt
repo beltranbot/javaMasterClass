@@ -2660,3 +2660,135 @@ class MyConsumer implements Runnable {
         }
     }
 }
+
+-- Deadlocks
+
+A deadlock occurs when two or more threads are blocked on locks and every
+thread that's blocked is holding a lock that another thread wants.
+For example, thread 1 is holding lock 1 and waiting to acquire lock 2 but
+thread 2 is holding lock 2 and waiting to acquire lock 1. Because all of the
+threads holding the locks are blocked, they will never release the locks they're
+holding and so none of the waiting threads will actually every run.
+
+package com.beltranbot;
+
+public class Main {
+
+    public static Object lock1 = new Object();
+    public static Object lock2 = new Object();
+
+    public static void main(String[] args) {
+        new Thread1().start();
+        new Thread2().start();
+    }
+
+    private static class Thread1 extends Thread {
+        @Override
+        public void run() {
+            synchronized (lock1) {
+                System.out.println("Thread 1: has lock1");
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+
+                }
+                System.out.println("Thread 1: waiting for lock2");
+                synchronized (lock2) {
+                    System.out.println("Thread 1: has lock1 and lock2");
+                }
+                System.out.println("Thread 1: Released lock2");
+            }
+            System.out.println("Thread 1: Released lock1. Exiting...");
+        }
+    }
+
+    private static class Thread2 extends Thread {
+
+        @Override
+        public void run() {
+            synchronized (lock2) {
+                System.out.println("Thread 2: has lock2");
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+
+                }
+                System.out.println("Thread 2: waiting for lock1");
+                synchronized (lock1) {
+                    System.out.println("Thread 2: has lock2 and lock1");
+                }
+                System.out.println("Thread 2: Released lock1");
+            }
+            System.out.println("Thread 2: Released lock2. Exiting...");
+        }
+    }
+}
+
+
+One solution would be any only try to lock on a single object and if you can write the code
+so that only one lock is required the code won't deadlock, but unfortunately that is not a practical
+solution for many application that need multiple locks.
+The second way to prevent deadlocks, is to require taht all threads must first try to obtain the locks
+in the same order.
+
+The deadlock in our example is possible because thread1 tries to obtain lock1 and then
+lock2, and of course, thread2 tries to obtain lock2 and the lock1. If we made both threads obtain the locks
+in the same order, a deadlock can't occur.
+
+package com.beltranbot;
+
+public class Main {
+
+    public static Object lock1 = new Object();
+    public static Object lock2 = new Object();
+
+    public static void main(String[] args) {
+        new Thread1().start();
+        new Thread2().start();
+    }
+
+    private static class Thread1 extends Thread {
+        @Override
+        public void run() {
+            synchronized (lock1) {
+                System.out.println("Thread 1: has lock1");
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+
+                }
+                System.out.println("Thread 1: waiting for lock2");
+                synchronized (lock2) {
+                    System.out.println("Thread 1: has lock1 and lock2");
+                }
+                System.out.println("Thread 1: Released lock2");
+            }
+            System.out.println("Thread 1: Released lock1. Exiting...");
+        }
+    }
+
+    private static class Thread2 extends Thread {
+
+        @Override
+        public void run() {
+            synchronized (lock1) {
+                System.out.println("Thread 2: has lock1");
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+
+                }
+                System.out.println("Thread 2: waiting for lock2");
+                synchronized (lock2) {
+                    System.out.println("Thread 2: has lock1 and lock2");
+                }
+                System.out.println("Thread 2: Released lock2");
+            }
+            System.out.println("Thread 2: Released lock1. Exiting...");
+        }
+    }
+}
+
+Another solution would be to use a lock object, rather than using synchronized blocks.
+Using the tryLock method that we talked about previously with or without timeout value
+may will prevent deadlocks but that will depend on the code.
