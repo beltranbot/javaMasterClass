@@ -3066,3 +3066,43 @@ and thread B will loop until thread A complete its trask. Thread A and thread B
 can get into a state in which they're both looping and waiting for the other to complete.
 That's actually what's called a live lock. The threads will never progress but 
 they're not actually blocked.
+
+-- Slipped condition
+the next potential problem that can arise in a multi-threaded application is called a
+slipped condition.
+This is a specific type of race condition (aka thread interference).
+It can occur when a thread can be suspended between reading a condition and acting on it.
+
+Let's say we have two threads reading from a buffer. Each thread does the following:
+
+1. check the status
+2. if it's ok, reads data from the buffer.
+3. if the data is EOF, it sets the status to EOF and terminates. If the data isn't EOF
+it sets the status to ok.
+
+If we haven't synchronized the code properly, the following can happen:
+
+1. thread1 checks the status and gets ok. It suspends.
+2. thread2 checks the status and gets ok. It reads EOF from the buffer and set
+the status to EOF, then terminates.
+3. thread1 runs again. it tries to read data from the buffer, but oops, there's no
+data. It throws an exception or crashes.
+
+Because the threads can interfere with each other when checking and setting the condition,
+Thread1 tried to do something based on obsolete information.
+When it checked the status, it was OK.
+
+But by the time it acted on the condition it checked, the status had been
+updated by Thread2. Unfortunately, thread 1 doesn't see the updated information,
+and because of that, it does something erroneous.
+
+We're not going to code an example, because we've already seen plenty of examples
+of thread interference. We can see how the above sequence of events will cause a problem.
+So, a slipped condition is a particular tyupe of race condition.
+The solution to this is the same as it is for any type of thread interference: use
+synchronized blocks or locks to synchronize the critical section of code.
+
+if the code is already synchronized, then sometimes the placement of the synchronization
+may be causing the problem.
+
+When using multiple locks, the order in which the locks can be acquired can also result in a slipped condition.
