@@ -2986,3 +2986,83 @@ to run when a lock becomes available is important. Ideally we would like things 
 come first served, because we can't dictate when threads will run we can't guarantee a first-come
 first-served order, but we can certainly do our best.
 
+-- fair locks
+Fair locks try to be first come first served, in a previous section in this course
+we learned about using the reentrant lock class, which implements the lock interface.
+The reentrant lock implementation allows us to create fair locks not all lock implementations do that
+the interface doesn't dictate that locks have to be fair. Always make sure to read the documentation
+for any lock implementation you want to use. To see what type of lock it is.
+
+Only fairness in adquiring the lock will be guaranteed, not thread scheduling.
+It's possible that the thread that gets the lock will execute a task that takes a long time.
+when using fair locks it's possible for threads to still have to wait a long time to run.
+The only thing a fair lock guarantees is the first come first serve ordering for getting the lock.
+Secondly the tryLock method doesn't honor the fairness settings so it will not be
+first come first served and lastly when using fair locks with a lot of threads keep in mind
+that performance will be impacted. To ensure fairness there has to be an extra layer of processing
+that manages which threads gets the lock, that can ultimately slow things down when there's a lot
+of threads competing for that lock.
+
+package com.beltrabot;
+
+import java.util.concurrent.locks.ReentrantLock;
+
+public class Main {
+
+    private static ReentrantLock lock = new ReentrantLock(true);
+
+    public static void main(String[] args) {
+        Thread t1 = new Thread(new Worker(ThreadColor.ANSI_RED), "Priority 10");
+        Thread t2 = new Thread(new Worker(ThreadColor.ANSI_BLUE), "Priority 8");
+        Thread t3 = new Thread(new Worker(ThreadColor.ANSI_GREEN), "Priority 6");
+        Thread t4 = new Thread(new Worker(ThreadColor.ANSI_CYAN), "Priority 4");
+        Thread t5 = new Thread(new Worker(ThreadColor.ANSI_PURPLE), "Priority 2");
+
+        t1.setPriority(10);
+        t2.setPriority(8);
+        t3.setPriority(6);
+        t4.setPriority(4);
+        t5.setPriority(2);
+
+        t1.start();
+        t2.start();
+        t3.start();
+        t4.start();
+        t5.start();
+    }
+
+    private static class Worker implements Runnable {
+
+        private int runCount = 1;
+        private String threadColor;
+
+        public Worker(String threadColor) {
+            this.threadColor = threadColor;
+        }
+
+        @Override
+        public void run() {
+            for (int i = 0; i < 100; i++) {
+                lock.lock();
+                try {
+                    System.out.format(threadColor + "%s: runCount = %d\n", Thread.currentThread().getName(), runCount++);
+                    // execute critical section of code
+                } finally {
+                    lock.unlock();
+                }
+            }
+        }
+    }
+}
+
+
+-- live lock
+A live lock is similar to a deadlock, but instead of the threads being blocked,
+they're actually constantly active and usually waiting for all the other threads to
+complete their tasks. Now since all the threads are waiting for others to complete
+none of them can actually progress.
+Let's say that the thread A will loop until thread A complete its task
+and thread B will loop until thread A complete its trask. Thread A and thread B
+can get into a state in which they're both looping and waiting for the other to complete.
+That's actually what's called a live lock. The threads will never progress but 
+they're not actually blocked.
