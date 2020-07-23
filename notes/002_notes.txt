@@ -3106,3 +3106,231 @@ if the code is already synchronized, then sometimes the placement of the synchro
 may be causing the problem.
 
 When using multiple locks, the order in which the locks can be acquired can also result in a slipped condition.
+
+-- Thread issues
+in t his lecture we'll cover a few loose ends related to threads that didn't fit into
+the previous lectures. First, let's remind ourselves of what an atomic action means.
+As we've seen, when a thread is running, it can be suspeded when it's
+in the middle of doing something.
+
+For example, if a thread calls the System.out.println() method, it can be suspended in the middle of executing
+the method. It may have evaluated the argument that's being passed, but it's suspended before it can print the result.
+Or it may be partway through evaluating the argument when it's suspended.
+Essentially, System.out.println() isn't an atomic action.
+
+An atomic action can't be suspended in the middle of being executed. It either
+completes, or it doesn't happend at all. Once a thread starts to run an atomic action,
+we can be confident that it won't be suspended until it has completed the action.
+
+In Java, we mentioned taht the following operations are atomic:
+
+1. Reading and writing reference varaibles. For example, the statement myObject1 = myObject2
+would be atomic. Athread can't be suspended in the middle of executing this statement.
+2. Reading and writing primitive variables, except those of type long and double. The JVM
+may require two operations to read and write longs and doubles, and a thread can be
+suspended between each operation. For example, a thread can't be suspended in the 
+middle of executing myint = 10. But it can be suspended in the middle of executing
+myDouble = 1.234
+3.Reading and writing all variables declared volatile.
+
+Let's take a look at the third item: volatile varaibles. you may think that since we
+don't have to worry about thread interference with atomic actions, taht we don't
+need to synchronize, but that isn't true.
+
+Because of the way Java manages memory, it's possible to get memory
+consistency errors when multiple threads can read and write the same variable.
+
+Java's memory management model is outside the scope of this lecture. All we need to know is taht each thread has a CPU
+cache, which can contain copies of values that are in main memory.
+
+Since it's faster to read from the cache, this can improve the performance of an
+application. There wouldn't be a probelm if there was only one CPU, but these days,
+most computers have more than one CPU.
+
+When running an application, each thread may be running on a different CPU, and each CPU has its own cache.
+It's possible for the values in the caches to become out of synch with each other, and with teh value in main memory
+- a memory consistency error.
+
+Suppose we have two threads taht use the same int counter. Thread1 reads and writes the
+counter. Thread2 only reads the counter. As we know, reading and writing  to an int is an
+atomic action. Athread won't be suspended in the middle of reading or writing the value
+to memory. But let's suppose that Thread1 is running on CPU1, and Thread2 is running on CPU2.
+Because of CPU caching, the following can happen:
+
+1. the value of the counter is 0 in main memory
+2. Thread1 reads teh value 0 from main memory
+3. Thread1 adds 1 to the value
+4. Thread1 writes the value of 1 to its CPU cache
+5. Thread2 reads teh value of counter from main memory and gets 0, rather than the latest value, which is 1
+
+This is where volatile variables come in. When we use a non-volatile  variable the JVM
+doesn't guarantee when it writes and updated value back to main memory. But when we
+use a volatile variable, the JVM writes the value back to main memory immediately after a
+thread updates the valu in its CPU cache. It also guarantees that every time a variable
+reads from a volatile variable, it will get the latest value.
+To make a variable volatile, we use the volatile keyword.
+
+public volatile int counter;
+
+You might be thinking that we don't have to synchronize code that uses volatile variables.
+Unfortunately, that's not entirely true. In our example, only one thread is updating the
+variable. In that case, we wouldn't need synchronization. But if more tha one thread can
+update the value of a volatile variable, we can still get a race condition.
+
+let's assume that we have two threads that share a volatile int counter, and each thread
+can read the following code:
+
+counter++;
+
+This isn't an atomic operation. A thread has to do the following:
+1. read the value of counter from memory
+2. add 1 to counter
+3. write the new value of counter back to memory
+
+A thread can be suspended after any of these steps. Because of that, the following can happen:
+
+1. The value of the counter is 1 in main memory and in Thread1 and Thread2's CPU caches.
+2. Thread1 reads the value of counter and gets 1
+3. Thread2 reads the value of counter and gets 1
+4. Thread1 increments the value and gets 2. It writes 2 to its cache. The JVM immediately writes 2 to main memory.
+5. Thread2 incrememts the value and gets 2. It writes 2 to its cac he. The JVM immediately writres 2 to main memory.
+6. Oops! The counter has been incremented twice, so its value should now be 3.
+
+A memory consitency error like this can occur when a thread can update the value of the
+variable in a way that depends on the existing value of the variable. In the counter++ case,
+the result of the increment depends on the existing value of the variable.
+
+In other words, a thread has to read the value of the counter variable in order to generate
+a new value for counter. By the time the thread operates on the value it has read, the
+value could be stale, as it is in this example.
+
+Whether to synchronize when using a volatile variable will depend on the code and what
+the threads will be doing. A common use of volatile is with varaible of type long and double.
+Reading and writing longs and doubles isn't atomic.
+
+Using volatile makes them atomic, but we'd still have to use synchronization in the
+situation we jsut described - when a thread reads the value of a variable and the uses the
+value, which may be stale, to generate a new value for the variable.
+
+However, when only one thread can change the value of a shared varaible, or none of the
+threads update the value of a shared variable in a way that depends on its existing value,
+using the volatile keyword does mean that we don't mean to synchronize the code. We can
+be confident that the value in main memory is always the latest value.
+
+That's great, and we can see that there will be times when using the volatile keyword will
+eliminate the need for synchronization. But it would be nice if w3e could read and write
+variables withou having to worry about thread interference or memory consistency
+errors. Fortunately Java provides classes that allows us to do just that, in specific cases.
+
+In an earlier lecture, we took a look at the few of the classes in the java.util.concurrency package,
+which was introduced with java 1.5. Another sub-package is the 
+java.util.concurrent.atomic package. This package provides us with classes that we can
+use to ensure that reaing and writing variables is atomic.
+
+It's difficult to create an example that illustrates how the classes in the package are useful.
+Like most thread concepts, the benefits re seen when there are multiple threads
+performing non-trivial tasks. So we'll ahve to take a look at some code, but not run anything.
+
+Let's suppose we have multiple threads using the following Counter class:
+
+class Counter {
+
+    private int counter = 0;
+
+    public void inc() {
+        counter++;
+    }
+
+    public void dec() {
+        counter--;
+    }
+
+    public int value() {
+        return counter;
+    }
+}
+
+We've learrned enough now to know that there would be the potential for thread
+interference, because the increment and decrement operations aren't atomic. Once again,
+an increment involves the following steps:
+
+1. Read the value of counter
+2. Add 1 to the value
+3. Write the new value back to counter
+
+A thread can be suspended bewteen any of these steps. As a result, the following could happen:
+
+1. Thread1 reads the value of counter and gets 5
+2. Thread1 suspends
+3. Th read2 reads t eh value of counter and gets5. It adds 1 to the value and writes 6
+to counter, then suspendes.
+4. Thread3 reads tehvalue of counter gets 6. It adds 1 to the value and writes 7 to
+counter, then suspends.
+5. Thread1 runs again. It adds 1 to the value of 5 and writes 6 to counter.
+6. Oops.
+
+Of course, we can come up with more run sequences that would lead to the value of 
+counter being compromised.
+
+Declaring the counter varaible as volatile is one potential solution, but we0ve learned that
+memory consitency errors can still be possible, which would be true here for the inc() and
+dec() method. Since a thread changes the value of counter in a way that depends on the
+existing value of counter, the values within the thread CPU caches may get out of synch
+with the value in main memory.
+
+Instead of using an int counter, we'll update the code to use an AtomicInteger
+Object. When using one of the Atomic types, we don't have to worry about
+thread interference. As the java documentation states, the classes in the
+java.util.concurrent.atomic package "support lock- free thread-safe programming
+on single variables." (documentation for the package is here:
+https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/atomic/package-summary.html)
+
+We declare the counter as type AtomicInteger and pass 0 as the initial value. In the inc() method, we use
+incrementAndGet(). This atomically increases the value by 1. The method decrementAndGet()
+decrease teh value by 1. To get the value, we call the get() method. We don't have to synchronize the
+increment or decrement operations in anyway.
+
+-- use AtomicInteger
+
+private AtomicInteger coutner = new Atomicinteger(0);
+
+public void inc() {
+    counter.incrementAndGet();
+}
+
+public void dec() {
+    counter.decrementAndGet();
+}
+
+public int value() {
+    return counter.get();
+}
+
+We can't use AtomicInteger as a substitute for an Integer object. AtomicIntegers are meant
+to be used in specific situation like the one above: when thread interference can take
+place because a thread is changing the value of the varaible in a way that depends on the 
+existing value.
+
+If you take a look at the documentation for the AtomicInteger class, you'll see that there
+are a limited number of methods, and most allows us to operate on the existing value of
+the Atomic variable ( documentation is here: https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/atomic/AtomicInteger.html)
+
+There are Atomic classes for the following types: boolean, integer, integer array,
+long, long aray, object reference, and double. Remember that we said reading
+and writing long and double variables ins't atomic? Well, we could use the
+AtomicLong and Atomic Double classes to make these operations atomic.
+
+The Atomic classes have set() and get() methods that allow us to set a value, and 
+get the current value. But the Atomic classes are really meant to be used in
+situations when a value is being incremented or decremented. They're nitented
+to be used when the code is using a loop counter, or generating a sequence of numbers
+for some other reason.
+
+One other method we'll briefly mention for the Atomic classes is the compareAndSet() method.
+This method takes two parameters: the expected value,
+and teh new value that you want to set. If the current value doesn't equal
+the expected value, the moethod returns false and the set doesn't take place.
+
+If the current value equlas teh expected value, then the set goes ahead and the
+method returns true. We can see how this would be useful when a thread knows
+that it might be suspended between getting a value and updating it.
