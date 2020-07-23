@@ -3334,3 +3334,14 @@ the expected value, the moethod returns false and the set doesn't take place.
 If the current value equlas teh expected value, then the set goes ahead and the
 method returns true. We can see how this would be useful when a thread knows
 that it might be suspended between getting a value and updating it.
+
+-- javafx background tasks
+
+let's take a look at how we can work with background threads in the UI applications.
+With the javafx section of this course we took a look at the javafx.concurrent package
+when working with threads in a UI application this is the go-to package to use when we want
+to perform a background task we use a calss that implements the worker interface or a class that
+extends the task class.
+Let's take a look at extending the task class.
+The task class implements the runanble interface and we can use task objects whenever or wherever
+we use runnable objects.
