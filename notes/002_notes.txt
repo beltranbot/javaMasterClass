@@ -3345,3 +3345,348 @@ extends the task class.
 Let's take a look at extending the task class.
 The task class implements the runanble interface and we can use task objects whenever or wherever
 we use runnable objects.
+
+-- challenge
+We've covered quite a bit in this section. Let's practice what we've learned. If you decide to type in and run the code, bear in mind that when working with threads,
+timing will affect what you see. You may have to run a few times to see the probelm we're discussing. Let0s suppose we have the following class:
+
+class BankAccount {
+
+    private double balance;
+    private String accountNumber;
+
+    public BankAccount(String accountNumber, double initialBalance) {
+        this.accountNumber = accountNumber;
+        this.balance = initialBalance;
+    }
+
+    public void deposit(double amount) {
+        balance += amount;
+    }
+
+    public void withdraw(double amount) {
+        balance -= amount;
+    }
+
+}
+
+this code is obviously simplified. A real world bank account class would have many more methods, and the deposit() and withdraw methods would be more complex.
+But we want to focus on concurrency, so we're keeping it simple.
+
+-- Challenge # 1
+Create and start threads we could have two people using a joint bank account at the same time. Create and start two threads that use the same BankAccount instance and an initial
+balance of $1000.00. One will deposit $300.00 into the bank account, and then withdraw $50.00. The other will deposit $203.75 and then withdraw $100.00.
+
+public class Main {
+
+    public static void main(String[] args) {
+        final BankAccount account = new BankAccount("12345-678", 1000.00);
+// method 1
+//        Thread trThread1 = new Thread () {
+//            public void run() {
+//                account.deposit(300.00);
+//                account.withdraw(50.00);
+//            }
+//        };
+//
+//        Thread trThread2 = new Thread() {
+//            public void run() {
+//                account.deposit(203.75);
+//                account.withdraw(100.00);
+//            }
+//        };
+
+// method 2
+        Thread trThread1 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                account.deposit(300.00);
+                account.withdraw(50.00);
+            }
+        });
+
+        Thread trThread2 = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                account.deposit(203.75);
+                account.withdraw(100.00);
+            }
+        });
+
+        trThread1.start();
+        trThread2.start();
+
+    }
+}
+
+-- Challenge # 2
+Make the BankAccount  class Threadsafe using the synchronize keyword
+
+I hope you can see that there's going to be thread interference when two threads are accessing the same BankAccount instance at the same time.
+We have to make the BankAccount class threadsafe, and that's our next challenge.
+Use the synchronized keyword to amke the BankAccount class threadsafe.
+
+public class BankAccount {
+
+    private double balance;
+    private String accountNumber;
+
+    public BankAccount(String accountNumber, double balance) {
+        this.accountNumber = accountNumber;
+        this.balance = balance;
+    }
+
+    public synchronized void deposit(double amount) {
+        balance += amount;
+    }
+
+    public synchronized void withdraw(double amount) {
+        balance -= amount;
+    }
+}
+
+-- second method
+
+public class BankAccount {
+
+    private double balance;
+    private String accountNumber;
+
+    public BankAccount(String accountNumber, double balance) {
+        this.accountNumber = accountNumber;
+        this.balance = balance;
+    }
+
+    public void deposit(double amount) {
+        synchronized (this) {
+            balance += amount;
+        }
+
+    }
+
+    public void withdraw(double amount) {
+        synchronized (this) {
+            balance -= amount;
+        }
+    }
+}
+
+-- challenge # 3
+make the BankAccount class threadsafe again using the synchronized keyword
+
+we've added two new methods. Update the code so that the BankAccount class is threadsafe.
+Use the synchronized keyword wherever necessary.
+
+r/ This was a bit of a trick challenge. We don't have to make any changes to the code.
+Because both threads only read the account number, thread interference isn't an issue. It would be a mistake to synchronize the getAccountNumber()
+and printAccountNumber() methods. We'd be over-synchronizing the code, and in application with a large number of threads, this can have a noticeable
+negative impact on performance.
+
+-- challenge # 4
+
+use ReentrantLock
+
+Instead of using the synchronized keyword, make the BankAccount class threadsafe using the RentrantLock class.
+
+r/ We'll create a lock object and use the lock() method in the withdraw() and deposit() methods. Two things to keep in mind:
+
+1. Both threads need to compete for the same lock, so we create only one lock
+object that we use in all the moethods that have critical sections of code.
+
+2. We put the critical section of code within a try/finally block , to ensure that the lock will be released.
+
+Don't forget to create the lock instance in the BankAccount constructor.
+
+public class BankAccount {
+
+    private double balance;
+    private String accountNumber;
+    private Lock lock;
+
+    public BankAccount(String accountNumber, double balance) {
+        this.accountNumber = accountNumber;
+        this.balance = balance;
+        this.lock = new ReentrantLock();
+    }
+
+    public void deposit(double amount) {
+        lock.lock();
+        try {
+            balance += amount;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public void withdraw(double amount) {
+        lock.lock();
+        try {
+            balance -= amount;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void printAccountNumber() {
+        System.out.println("Account number: " + accountNumber);
+    }
+}
+
+-- challenge # 5
+
+Use tryLock with a timeout value
+
+Instead of using lock(), use tryLock() with a timeout value of 1 second. If the waiting period times out, print the message, "Could not get the lock" to the console.
+
+Hint: Use the form of the tryLock() method that accepts two parameters - the first parameter is the timeout value, and the second parameter is the time unit
+of the ffirst parameter. Use TimeUnit.MILLISECONDS for the second parameter.
+ 
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
+public class BankAccount {
+
+    private double balance;
+    private String accountNumber;
+    private Lock lock;
+
+    public BankAccount(String accountNumber, double balance) {
+        this.accountNumber = accountNumber;
+        this.balance = balance;
+        this.lock = new ReentrantLock();
+
+    }
+
+    public void deposit(double amount) {
+        boolean status = false;
+        try {
+            if (lock.tryLock(1000, TimeUnit.MILLISECONDS)) {
+                try {
+                    balance += amount;
+                    status = true;
+                } finally {
+                    lock.unlock();
+                }
+            } else {
+                System.out.println("Could not get the lock");
+            }
+        } catch (InterruptedException e) {
+            // do something here
+        }
+
+        System.out.println("Transaction status = " + status);
+    }
+
+    public void withdraw(double amount) {
+        boolean status = false;
+        try {
+            if (lock.tryLock(1000, TimeUnit.MILLISECONDS)) {
+                try {
+                    balance -= amount;
+                } finally {
+                    lock.unlock();
+                }
+            } else {
+                System.out.println("Could not get the lock");
+            }
+        } catch (InterruptedException e) {
+            // do something here
+        }
+
+        System.out.println("Transaction status = " + status);
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void printAccountNumber() {
+        System.out.println("Account number: " + accountNumber);
+    }
+}
+
+-- challenge # 6
+
+Update the code so that status variable is thread safe
+
+Use whatever method you like: the synchronized keyword or the lock object.
+
+r/ Another trick challenge. Since the status variable is a local variable, it's already
+threadsafe. Local varaibles are s tored on the thread stack, so each thread will have its own copy.
+Threads won't interfere with each other when it comes to setting and getting the status value.
+
+-- challenge # 7
+
+Spot and fix the problem
+
+Let's take a look at a similar application which also deals with Bank Accounts, but in this case, performs transfers from one bank account to another.
+
+This version of the BankAccount class has three methods: deposit(), withdraw(), and transfer(). The deposit() and withdraw() methods are similar to what we had before.
+The transfer() method first tries to withdraw the money from the source acccount. If it's successful, it deposists the money into the destination account and returns true.
+If it's not successful, it refunds the source account and returns false.
+
+In the main() method, we create two bank accounts and start two threads. Each thread will perform a transfer using an instance of the Transfer class.
+The transfer class's run() method loops until a transfer is successful.
+
+The challenge is to spot what's wrong with this code and to fix it. What do we call this particular situation (deadlock, livelock, etc.)? Why is it happening?
+How would we fix it? Hint: the quickest way to get an inkling of what's wrong is to type or copy/paste this code into a new IntelliJ project, and to run it.
+
+r/ This code gives rise to a livelock situation. The two threads aren't blocked, abut they can't progress. They'll keep withdrawing money, trying to do the transfer,
+failing, and refunding the money. Then they'll loop back and try to do the transfer again, until we manually terminate the application.
+
+To fix it, we need to figure out why it's happening. In this case, the code is never releasing the code. Therefore, the first thread that gets the lock for a bank
+account hangs on to it forever. The second thread can never get the lock for the destination account.
+
+here's a potential sequence of execution:
+
+1. Thread Transfer1 calls transfer() to transfer money from account1 to account2
+2. Transfer1 gets account1's lock (when the transfer() method calss the withdraw() method) and withdraws the money to be transferred from account1.
+3. Thread Transfer2 calls transfer() to transfer money from account2 to account1
+4. Transfer2 gets account2's lock and withdraws themoney to be transferred from account2
+5. Transfer1 calls account2's deposit() method, but Transfer2 is holding the lock, so the transfer fails. It refunds the money back into account1 (it's still holding the lock)
+and loops back.
+6. Transfer2 calls account1's deposit() metrhod, but Transfer1 is holding the lock, so the transfer fails. It refunds the money back into account2 (it's stil holding the lock) and loops
+back.
+7. Since Transfer1 and Transfer2 never release the locks they're holding, they'll keep looing until we terminate the application manually.
+
+The fix in this case is to have the threads release the lock by calling the unlock() method. Remember that we always want to use a try/finally block when dealing with
+lock objects.
+
+Now when we run, the transfers will eventually be successful and the application will terminate normally.
+
+-- challenge # 8
+We have a deadlock. Let's look at a potential sequence:
+
+1. the tutor thread calls tutor.studyTime()
+2. The tutor thread gets the lock for the Tutor object (because the studyTime() method is synchronized). It prints "Tutor has arrived" and waits for the student,
+which we've simulated by calling sleep().
+3. The student thread runs and calls handInAssignment(). Since the method is synchronized, it gets the lock for the student object. It calls tutor.getProgressReport(),
+but tthe Tutor thread is holding the lock for the tutor object, so the Student thread blocks.
+4. The Tutor thread wakes up and runs, and calls student.startStudy(). But the method is synchronized, and the Student thread is holding the lock for the Student object,
+so the Tutor thread blocks.
+5. We ahve a deadlock. Neither thread will ever release the lock that the other thread is waiting for.
+
+Essentially, the threads are trying to acquire the same set of locks in a different order, which often results in a deadlock. The tutor thread gets the Tutor lock and 
+then wants the Student lock. The student thread gets the Student lock and then wants the Tutor lock.
+
+The fix will depend on the code. Perhaps over-synchronization is occurring. Do we really need to synchronize all the methods, or can we isolate critical sections
+of code within the methods and use synchronized blocks instead? In a real world application, we'd have to study the code.
+
+We might also consider rewriting some of the code. Do the tutor and student objects really need to call each other in this circular fashion? Can we make use of
+parameters in any way?
+
+Another potential solution would be to use ReentrantLock objects and the tryLock() method with a timeout value. If the tryLock() method times out, the thread
+wouldn't be able to execute the critical section of code, but at least the application wouldn't be deadlocked. Also, a thread could release any locks it's
+holding when the tryLock() times out, allowing any threads waiting for those locks to run successfully.
+
+There may be other solutions. When dealing with a deadlock situtation, look for the following:
+
+1. Is a set of locks being obtained in a different order by multiple threads (that's the case here). If so, can we force all threads to obtain the locks in the same order?
+2. Are we over-synchronizing the code?
+3. Can we rewrite the code to break any circular call patterns?
+4. Would using ReentrantLock objects help?
