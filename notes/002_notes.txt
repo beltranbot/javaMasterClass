@@ -3666,10 +3666,10 @@ We have a deadlock. Let's look at a potential sequence:
 2. The tutor thread gets the lock for the Tutor object (because the studyTime() method is synchronized). It prints "Tutor has arrived" and waits for the student,
 which we've simulated by calling sleep().
 3. The student thread runs and calls handInAssignment(). Since the method is synchronized, it gets the lock for the student object. It calls tutor.getProgressReport(),
-but tthe Tutor thread is holding the lock for the tutor object, so the Student thread blocks.
+but the Tutor thread is holding the lock for the tutor object, so the Student thread blocks.
 4. The Tutor thread wakes up and runs, and calls student.startStudy(). But the method is synchronized, and the Student thread is holding the lock for the Student object,
 so the Tutor thread blocks.
-5. We ahve a deadlock. Neither thread will ever release the lock that the other thread is waiting for.
+5. We have a deadlock. Neither thread will ever release the lock that the other thread is waiting for.
 
 Essentially, the threads are trying to acquire the same set of locks in a different order, which often results in a deadlock. The tutor thread gets the Tutor lock and 
 then wants the Student lock. The student thread gets the Student lock and then wants the Tutor lock.
@@ -3690,3 +3690,24 @@ There may be other solutions. When dealing with a deadlock situtation, look for 
 2. Are we over-synchronizing the code?
 3. Can we rewrite the code to break any circular call patterns?
 4. Would using ReentrantLock objects help?
+
+-- challenge # 9
+
+This example demonstrates just how tricky it can be to work with threads. Let's take a look at the sequence to see why we're still deadlocked.
+
+1. The tutor calls the tutor.studyTime() method. It acquires the Tutor lock, and then the Student lock.
+2. The tutor thread reaches the this.wait() line of code. When it executes wait(), it releases the tutor lock. Recall that the wait() and notifyAll() methods must be called from within
+synchronized blocks. To call wait() on an object, a thread muste be holding the object's lock. When it calls wait(), it releases the lock.
+3. The student thread runs the handInAssignment() method. It gets the tutor lock and calls getProgressReport(). It then tries to get the student lock, but the tutor thread
+is still holding it. Because of that, the student thread can't notify the tutor thread.
+
+The tricky part here is that it looks like the two threads have to obtain the locks in the same order. From a casual look at the code, it doesn't seem possible for a thread
+to get the tutor lock and then block on getting the student lock. But because wait() results in a thread releasing the lock until it's notified, the student thread
+can obtain the tutor lock while the tutor thread is still holding the student lock.
+
+We'll add another item to the "waht to check if the code deadlocking" list. Take a look at place where the code calls wait() and see if that may cause a deadlock.
+The wait() method results in a thread releasing a lock before it has exited the synchronized block, and this premature (albeit temporary) release can lead to
+problems if we're not careful.
+
+How would we fix this? It will depend on the code. Perphaps using ReentrantLock objects would work better. We could have the tutor thread release the sudent lock
+ before it calls wait(), and then try to reacquire it again when it wakes up.
