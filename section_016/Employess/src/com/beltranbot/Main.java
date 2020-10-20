@@ -3,9 +3,8 @@ package com.beltranbot;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.function.IntPredicate;
+import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 public class Main {
 
@@ -25,39 +24,21 @@ public class Main {
         employeeList.add(red);
         employeeList.add(charming);
 
-        printEmployeesByAge(
-                employeeList,
-                "Employees over 30",
-                employee -> employee.getAge() > 30
-        );
-        printEmployeesByAge(
-                employeeList,
-                "Employees 30 and under",
-                employee -> employee.getAge() <= 30
-        );
-        printEmployeesByAge(
-                employeeList,
-                "Employees under 24",
-                new Predicate<Employee>() {
-                    @Override
-                    public boolean test(Employee employee) {
-                        return employee.getAge() < 25;
-                    }
-                }
-        );
-        IntPredicate greaterThanFifteen= i -> i > 15;
-        IntPredicate lessThan100 = i -> i < 100;
-        System.out.println(greaterThanFifteen.test(10));
-        int a = 20;
-        System.out.println(greaterThanFifteen.test(a + 5));
-        System.out.println(greaterThanFifteen.and(lessThan100).test(50));
-        System.out.println(greaterThanFifteen.and(lessThan100).test(15));
+        Function<Employee, String> getLastName = employee -> employee.getName().substring(employee.getName().indexOf(' ') + 1);
+        Function<Employee, String> getFirstName = employee -> employee.getName().substring(0, employee.getName().indexOf(' '));
 
-        Random random = new Random();
-        Supplier<Integer> randomSupplier = () -> random.nextInt(1000);
-        for (int i = 0; i < 10; i++) {
-            System.out.println(randomSupplier.get());
+        Random random1 = new Random();
+        for (Employee employee : employeeList) {
+            if (random1.nextBoolean()) {
+                System.out.println(getAName(getFirstName, employee));
+            } else {
+                System.out.println(getAName(getLastName, employee));
+            }
         }
+    }
+
+    private static String getAName(Function<Employee, String> getName, Employee employee) {
+        return getName.apply(employee);
     }
 
     private static void printEmployeesByAge(
