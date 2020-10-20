@@ -3,8 +3,7 @@ package com.beltranbot;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.function.Function;
-import java.util.function.Predicate;
+import java.util.function.*;
 
 public class Main {
 
@@ -35,6 +34,25 @@ public class Main {
                 System.out.println(getAName(getLastName, employee));
             }
         }
+
+        Function<Employee, String> upperCase = employee -> employee.getName().toUpperCase();
+        Function<String, String> firstname = name -> name.substring(0, name.indexOf(' '));
+        Function chainedFunction = upperCase.andThen(firstname);
+
+        System.out.println(chainedFunction.apply(employeeList.get(0)));
+
+        BiFunction<String, Employee, String> concatAge = (name, employee) -> name.concat(" " + employee.getAge());
+        String upperName = upperCase.apply(employeeList.get(0));
+        System.out.println(concatAge.apply(upperName, employeeList.get(0)));
+
+        IntUnaryOperator incBy5 = i -> i + 5;
+        System.out.println(incBy5.applyAsInt(10));
+
+        Consumer<String> c1 = s -> s.toUpperCase();
+        Consumer<String> c2 = s -> System.out.println(s);
+
+        c1.andThen(c2).accept("Hello world");
+
     }
 
     private static String getAName(Function<Employee, String> getName, Employee employee) {
