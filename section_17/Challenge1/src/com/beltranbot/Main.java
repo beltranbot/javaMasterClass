@@ -17,6 +17,9 @@ public class Main {
         challenge9();
         challenge10();
         challenge11();
+        challenge12();
+        challenge13();
+        challenge14();
     }
 
     public static void challenge1() {
@@ -130,6 +133,44 @@ public class Main {
         while (matcher.find()) {
             System.out.println("Occurrence: " + matcher.group(1));
         }
+    }
 
+    public static void challenge12() {
+        System.out.println("--- challenge 12 ---");
+        String challenge12 = "11111";
+
+        String regEx = "^(\\d{5})$";
+        Pattern pattern = Pattern.compile(regEx);
+        Matcher matcher = pattern.matcher(challenge12);
+
+        while (matcher.find()) {
+            System.out.println("Occurrence: " + matcher.group(1));
+        }
+    }
+
+    public static void challenge13() {
+        System.out.println("--- challenge 13 ---");
+        String challenge13 = "11111-1111";
+
+        String regEx = "^(\\d{5}-\\d{4})$";
+        Pattern pattern = Pattern.compile(regEx);
+        Matcher matcher = pattern.matcher(challenge13);
+
+        while (matcher.find()) {
+            System.out.println("Occurrence: " + matcher.group(1));
+        }
+    }
+
+    public static void challenge14() {
+        System.out.println("--- challenge 14 ---");
+        String challenge12 = "11111-1111";
+
+        String regEx = "^(\\d{5}(-\\d{4})?)$";
+        Pattern pattern = Pattern.compile(regEx);
+        Matcher matcher = pattern.matcher(challenge12);
+
+        while (matcher.find()) {
+            System.out.println("Occurrence: " + matcher.group(1));
+        }
     }
 }
