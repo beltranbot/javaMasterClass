@@ -92,5 +92,31 @@ public class Main {
             System.out.println("Occurrence: " + h2TextMatcher.group(2));
         }
 
+        // and
+        // "abc" "a" and "b" and "c"
+        // or
+        // [Hh]arry
+        System.out.println("harry".replaceAll("[H|h]arry", "Larry"));
+        System.out.println("Harry".replaceAll("[H|h]arry", "Larry"));
+
+        // Not
+        // [^abc]
+
+        // negative look ahead
+        String tvTest = "tstvtkt";
+//        String tNotVRegExp = "t[^v]";
+        String tNotVRegExp = "t(?!v)"; // negative look ahead
+        Pattern tNotVPattern = Pattern.compile(tNotVRegExp);
+        Matcher tNotVMatcher = tNotVPattern.matcher(tvTest);
+
+        count = 0;
+        while (tNotVMatcher.find()) {
+            count++;
+            System.out.println("Occurrence" + count + " : " + tNotVMatcher.start() + " to " + tNotVMatcher.end());
+        }
+
+        // t(?=v) positive look ahead
+
+
     }
 }
