@@ -9,11 +9,14 @@ public class Utilities {
             return sourceArray;
         }
 
-        int returnedLength = sourceArray.length / n;
+        int returnedLength = sourceArray.length / 2;
         char[] result = new char[returnedLength];
         int index = 0;
-        for (int i = n - 1; i < sourceArray.length; i++) {
-            result[index++] = sourceArray[i];
+        for (int i = 0; i < sourceArray.length; i++) {
+            if ((i + 1) == returnedLength) {
+                result[index++] = sourceArray[i];
+                returnedLength *= 2;
+            }
         }
 
         return result;
@@ -25,7 +28,7 @@ public class Utilities {
     // "ABCBDEEF" => "ABCBDEF" (the two B's aren't next to each other)
     public String removePairs(String source) {
         // If length is less than 2, there won't be any pairs
-        if (source.length() < 2) {
+        if (source == null || source.length() < 2) {
             return source;
         }
 
@@ -36,16 +39,15 @@ public class Utilities {
             if (string[i] != string[i + 1]) {
                 sb.append(string[i]);
             }
-            if ((i + 1) == string.length - 1 && string[i] != string[i + 1]) {
-                sb.append(string[i + 1]);
-            }
         }
+
+        sb.append(string[string.length - 1]);
 
         return sb.toString();
     }
 
     public String removePairsRegExp(String string) {
-        if (string.length() < 2) {
+        if (string == null || string.length() < 2) {
             return string;
         }
 
