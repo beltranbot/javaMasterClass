@@ -5,17 +5,21 @@ import java.util.Random;
 import static org.junit.Assert.*;
 
 public class UtilitiesTest {
+    static Utilities utilities;
+
+    @org.junit.BeforeClass
+    public static void beforeClass() {
+        utilities = new Utilities();
+    }
 
     @org.junit.Test
     public void everyNthChar() {
-        Utilities utilities = new Utilities();
         char[] actual = utilities.everyNthChar(new char[] {'H', 'E', 'L', 'L', 'O'}, 2);
         assertArrayEquals("Wrong Output", new char[] {'E', 'L'}, actual);
     }
 
     @org.junit.Test
     public void everyNthChar_nGreaterThanLength() {
-        Utilities utilities = new Utilities();
         char[] source = {'H', 'E', 'L', 'L', 'O'};
         char[] actual = utilities.everyNthChar(source, 6);
         assertArrayEquals("Wrong Output", source, actual);
@@ -23,25 +27,21 @@ public class UtilitiesTest {
 
     @org.junit.Test
     public void removePairs_1() {
-        Utilities utilities = new Utilities();
         assertEquals("Wrong output", "ABCDEF", utilities.removePairs("ABBCDEEF"));
     }
 
     @org.junit.Test
     public void removePairs_2() {
-        Utilities utilities = new Utilities();
         assertEquals("Wrong output", "ABCBDEF", utilities.removePairs("ABCBDEEF"));
     }
 
     @org.junit.Test
     public void removePairs_length2ReturnsSource() {
-        Utilities utilities = new Utilities();
         assertEquals("Wrong output", "AB", utilities.removePairs("AB"));
     }
 
     @org.junit.Test
     public void removePairs_ABC() {
-        Utilities utilities = new Utilities();
         String expected = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String source = generateRandomSource();
         assertEquals("Wrong output", expected, utilities.removePairs(source.toString()));
@@ -64,7 +64,6 @@ public class UtilitiesTest {
 
     @org.junit.Test
     public void removePairsRegExp() {
-        Utilities utilities = new Utilities();
         assertEquals("Wrong output", "ABCDEF", utilities.removePairsRegExp("ABBCDEEF"));
         assertEquals("Wrong output", "ABCBDEF", utilities.removePairsRegExp("ABCBDEEF"));
         assertEquals("Wrong output", "AB", utilities.removePairsRegExp("AB"));
@@ -74,13 +73,16 @@ public class UtilitiesTest {
 
     @org.junit.Test
     public void converter() {
-        Utilities utilities = new Utilities();
         assertEquals("Wrong output", 300, utilities.converter(10, 5));
+    }
+
+    @org.junit.Test(expected = ArithmeticException.class)
+    public void converter_ArithmeticException() throws Exception {
+        utilities.converter(10, 0);
     }
 
     @org.junit.Test
     public void nullIfOddlength_even() {
-        Utilities utilities = new Utilities();
         String source = "even";
         assertEquals("Wrong output", source, utilities.nullIfOddlength(source));
     }
@@ -89,6 +91,5 @@ public class UtilitiesTest {
     public void nullIfOddlength_odd() {
         Utilities utilities = new Utilities();
         assertNull("Wrong output", utilities.nullIfOddlength("odd"));
-
     }
 }
