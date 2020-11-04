@@ -1,6 +1,9 @@
 package com.beltranbot;
 
+import com.beltranbot.model.Artist;
 import com.beltranbot.model.DataSource;
+
+import java.util.List;
 
 public class Main {
 
@@ -11,5 +14,18 @@ public class Main {
             return;
         }
 
+        List<Artist> artistList = dataSource.queryArtists();
+        if (artistList == null) {
+            System.out.println("No artists!");
+            return;
+        }
+
+        for (Artist artist : artistList) {
+            System.out.println("ID = " + artist.getId() + ", Name = " +
+                    artist.getName());
+        }
+
+        dataSource.close();
     }
+
 }

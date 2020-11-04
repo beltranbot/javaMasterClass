@@ -1,8 +1,8 @@
 package com.beltranbot.model;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DataSource {
 
@@ -13,14 +13,14 @@ public class DataSource {
     public static final String COLUMN_ALBUM_NAME = "name";
     public static final String COLUMN_ALBUM_ARTIST = "artist";
 
-    public static final String TABLE_ARTISTS = "artist";
-    public static final String TABLE_ARTIST_ID = "_id";
-    public static final String TABLE_ARTIST_NAME = "name";
+    public static final String TABLE_ARTISTS = "artists";
+    public static final String COLUMN_ARTIST_ID = "_id";
+    public static final String COLUMN_ARTIST_NAME = "name";
 
-    public static final String TABLE_SONGS = "artist";
-    public static final String TABLE_SONG_ID = "_id";
-    public static final String TABLE_SONG_NAME = "name";
-    public static final String TABLE_SONG_ALBUM = "album";
+    public static final String TABLE_SONGS = "songs";
+    public static final String COLUMN_SONG_ID = "_id";
+    public static final String COLUMN_SONG_NAME = "name";
+    public static final String COLUMN_SONG_ALBUM = "album";
 
     private Connection conn;
 
@@ -44,5 +44,25 @@ public class DataSource {
         }
     }
 
+    public List<Artist> queryArtists() {
+
+        try (Statement statement = conn.createStatement();
+             ResultSet resultSet = statement.executeQuery("select * from " + TABLE_ARTISTS)) {
+
+            List<Artist> artists = new ArrayList<>();
+            while (resultSet.next()) {
+                Artist artist = new Artist();
+                artist.setId(resultSet.getInt(COLUMN_ARTIST_ID));
+                artist.setName(resultSet.getString(COLUMN_ARTIST_NAME));
+                artists.add(artist);
+            }
+
+            return artists;
+
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
 
 }
