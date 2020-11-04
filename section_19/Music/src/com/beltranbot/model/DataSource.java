@@ -36,6 +36,17 @@ public class DataSource {
     public static final int ORDER_BY_ASC = 2;
     public static final int ORDER_BY_DESC = 3;
 
+    public static final String QUERY_ALBUMS_BY_ARTIST_START = (
+            "select " + TABLE_ALBUMS + "." + COLUMN_ALBUM_NAME +
+                    " from " + TABLE_ALBUMS +
+                    " join " + TABLE_ARTISTS + " on " +
+                    TABLE_ARTISTS + "." + COLUMN_ARTIST_ID + " = " + TABLE_ALBUMS + "." + COLUMN_ALBUM_ARTIST +
+                    " where " + TABLE_ARTISTS + "." + COLUMN_ARTIST_NAME + " = '"
+            );
+    public static final String QUERY_ALBUMS_BY_ARTIST_SORT = (
+            " order by " + TABLE_ALBUMS + "." + COLUMN_ALBUM_NAME + " collate nocase "
+            );
+
     private Connection conn;
 
     public boolean open() {
@@ -61,16 +72,17 @@ public class DataSource {
     public List<Artist> queryArtists(int sortOrder) {
         StringBuilder sb = new StringBuilder("select * from ");
         sb.append(TABLE_ARTISTS);
-        if (sortOrder != ORDER_BY_NONE) {
-            sb.append(" ORDER BY ");
-            sb.append(COLUMN_ARTIST_NAME);
-            sb.append(" COLLATE NOCASE ");
-            if (sortOrder == ORDER_BY_DESC) {
-                sb.append("DESC");
-            } else {
-                sb.append("ASC");
-            }
-        }
+        sb.append(applySort(sortOrder));
+//        if (sortOrder != ORDER_BY_NONE) {
+//            sb.append(" ORDER BY ");
+//            sb.append(COLUMN_ARTIST_NAME);
+//            sb.append(" COLLATE NOCASE ");
+//            if (sortOrder == ORDER_BY_DESC) {
+//                sb.append("DESC");
+//            } else {
+//                sb.append("ASC");
+//            }
+//        }
 
         try (Statement statement = conn.createStatement();
              ResultSet resultSet = statement.executeQuery(sb.toString())) {
@@ -89,6 +101,51 @@ public class DataSource {
             System.out.println("Query failed: " + e.getMessage());
             return null;
         }
+    }
+
+    public List<String> queryAlbumsForArtist(String artistName, int sortOrder) {
+        StringBuilder sb = new StringBuilder(QUERY_ALBUMS_BY_ARTIST_START);
+        sb.append(artistName + "'");
+        if (sortOrder != ORDER_BY_NONE) {
+            sb.append(QUERY_ALBUMS_BY_ARTIST_SORT);
+            if (sortOrder == ORDER_BY_DESC) {
+                sb.append("desc");
+            } else {
+                sb.append("asc");
+            }
+        }
+
+        try (Statement statement = conn.createStatement();
+             ResultSet resultSet = statement.executeQuery(sb.toString())) {
+
+            List<String> albums = new ArrayList<>();
+            while (resultSet.next()) {
+                String album = "";
+                albums.add(resultSet.getString(1));
+            }
+
+            return albums;
+
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            return null;
+        }
+    }
+
+    private String applySort(int sortOrder) {
+        StringBuilder sb = new StringBuilder();
+        if (sortOrder != ORDER_BY_NONE) {
+            sb.append(" ORDER BY ");
+            sb.append(COLUMN_ARTIST_NAME);
+            sb.append(" COLLATE NOCASE ");
+            if (sortOrder == ORDER_BY_DESC) {
+                sb.append("DESC");
+            } else {
+                sb.append("ASC");
+            }
+        }
+
+        return sb.toString();
     }
 
 }

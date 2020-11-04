@@ -25,6 +25,14 @@ public class Main {
                     artist.getName());
         }
 
+        String artist = "Pink Floyd";
+        List<String> albums = dataSource.queryAlbumsForArtist(artist, dataSource.ORDER_BY_DESC);
+
+        System.out.println("******** ALBUMS BY: " + artist + " **************");
+        for (String album : albums) {
+            System.out.println("album: " + album);
+        }
+
         dataSource.close();
     }
 
