@@ -2,6 +2,7 @@ package com.beltranbot;
 
 import com.beltranbot.model.Artist;
 import com.beltranbot.model.DataSource;
+import com.beltranbot.model.SongArtist;
 
 import java.util.List;
 
@@ -32,6 +33,20 @@ public class Main {
         for (String album : albums) {
             System.out.println("album: " + album);
         }
+
+        List<SongArtist> songArtists = dataSource.queryArtistsForSong("Go Your Own Way", DataSource.ORDER_BY_ASC);
+        if (songArtists == null) {
+            System.out.println("Couldn't find the artist for the song");
+            return;
+        }
+
+        for (SongArtist songArtist : songArtists) {
+            System.out.println("Artist name = " + songArtist.getArtistName() +
+                    " Album: " + songArtist.getAlbumName() +
+                    " Track: " + songArtist.getTrack());
+        }
+
+        dataSource.querySongsMetadata();
 
         dataSource.close();
     }
