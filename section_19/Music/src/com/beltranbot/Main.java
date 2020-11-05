@@ -26,7 +26,7 @@ public class Main {
         }
 
         String artist = "Pink Floyd";
-        List<String> albums = dataSource.queryAlbumsForArtist(artist, dataSource.ORDER_BY_DESC);
+        List<String> albums = dataSource.queryAlbumsForArtist(artist, dataSource.ORDER_BY_ASC);
 
         System.out.println("******** ALBUMS BY: " + artist + " **************");
         for (String album : albums) {
