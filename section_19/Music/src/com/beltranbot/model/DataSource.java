@@ -65,6 +65,23 @@ public class DataSource {
                     " COLLATE NOCASE "
     );
 
+    public static final String TABLE_ARTIST_SONG_VIEW = "artist_list";
+    public static final String CREATE_ARTIST_FOR_SONG_VIEW = (
+            "CREATE VIEW IF NOT EXISTS " + TABLE_ARTIST_SONG_VIEW + " AS " +
+                    "SELECT " + TABLE_ARTISTS + "." + COLUMN_ARTIST_NAME + ", " +
+                    TABLE_ALBUMS + "." + COLUMN_ALBUM_NAME + " AS album, " +
+                    TABLE_SONGS + "." + COLUMN_SONG_TRACK + ", " +
+                    TABLE_SONGS + "." + COLUMN_SONG_TITLE +
+                    " FROM " + TABLE_SONGS +
+                    " JOIN " + TABLE_ALBUMS + " ON " +
+                    TABLE_ALBUMS + "." + COLUMN_ALBUM_ID + " = " + TABLE_SONGS + "." + COLUMN_SONG_ALBUM +
+                    " JOIN " + TABLE_ARTISTS     + " ON " +
+                    TABLE_ARTISTS + "." + COLUMN_ARTIST_ID + " = " + TABLE_ALBUMS + "." + COLUMN_ALBUM_ARTIST +
+                    " ORDER BY " +
+                    TABLE_ALBUMS + "." + COLUMN_ALBUM_NAME + ", " +
+                    TABLE_SONGS + "." + COLUMN_SONG_TRACK
+    );
+
     private Connection conn;
 
     public boolean open() {
@@ -206,7 +223,7 @@ public class DataSource {
         String sql = "SELECT * FROM " + TABLE_SONGS;
 
         try (Statement statement = conn.createStatement();
-        ResultSet results = statement.executeQuery(sql)) {
+             ResultSet results = statement.executeQuery(sql)) {
             ResultSetMetaData meta = results.getMetaData();
             int numColumns = meta.getColumnCount();
             for (int i = 1; i <= numColumns; i++) {
@@ -216,6 +233,33 @@ public class DataSource {
         } catch (SQLException e) {
             System.out.println("Query failed: " + e.getMessage());
             e.printStackTrace();
+        }
+    }
+
+    public int getCount(String table) {
+        String sql = "SELECT COUNT(*) as count FROM " + table;
+
+        try (Statement statement = conn.createStatement();
+             ResultSet results = statement.executeQuery(sql)) {
+            int count = results.getInt("count");
+            System.out.format("Count = %d\n", count);
+            return count;
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    public boolean createViewForSongArtists() {
+        try (Statement statement = conn.createStatement()) {
+            System.out.println(CREATE_ARTIST_FOR_SONG_VIEW);
+            statement.execute(CREATE_ARTIST_FOR_SONG_VIEW);
+            return true;
+        } catch (SQLException e) {
+            System.out.println("Query failed: " + e.getMessage());
+            e.printStackTrace();
+            return false;
         }
     }
 
